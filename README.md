@@ -48,7 +48,7 @@ Bug reports and pull requests are welcome on GitHub at
 https://github.com/[USERNAME]/cfdi40. This project is intended to be a
 safe, welcoming space for collaboration, and contributors are expected
 to adhere to the [code of
-conduct](https://github.com/[USERNAME]/cfdi40/blob/master/CODE_OF_CONDUCT.md).
+conduct](https://github.com/israelbz/cfdi40/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
