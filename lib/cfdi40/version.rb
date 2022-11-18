@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Cfdi40
-  VERSION = "0.0.1.alfa"
+  VERSION = "0.0.2"
 end

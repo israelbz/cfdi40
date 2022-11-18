@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     cfdi40 (0.0.1.alfa)
-      nokogiri (~> 1.13, >= 1.13.9)
+      nokogiri (>= 1.10.10)
 
 GEM
   remote: https://rubygems.org/

@@ -1,8 +1,20 @@
 # frozen_string_literal: true
 
 require "nokogiri"
+require "base64"
+require "openssl"
 require_relative "cfdi40/version"
+require_relative "cfdi40/schema_validator"
+require_relative "cfdi40/sat_csd"
+require_relative "cfdi40/node"
 require_relative "cfdi40/comprobante"
+require_relative "cfdi40/emisor"
+require_relative "cfdi40/receptor"
+require_relative "cfdi40/conceptos"
+require_relative "cfdi40/concepto"
+require_relative "cfdi40/impuestos"
+require_relative "cfdi40/traslados"
+require_relative "cfdi40/traslado"
 
 # Leading module and entry point for all features and classes
 #
