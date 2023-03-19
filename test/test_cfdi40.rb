@@ -4,6 +4,8 @@ require "test_helper"
 require "rexml/document"
 
 class TestCfdi40 < Minitest::Test
+  include Cfdi40Helper
+
   def test_that_it_has_a_version_number
     refute_nil ::Cfdi40::VERSION
   end
@@ -49,47 +51,6 @@ class TestCfdi40 < Minitest::Test
     assert_instance_of Cfdi40::Receptor, cfdi.receptor
   end
 
-  def cfdi_base
-    cfdi = Cfdi40.new
-    cfdi.lugar_expedicion = '06000'
-    cfdi.emisor.regimen_fiscal = '612'
-    cfdi.receptor.nombre = 'JUAN PUEBLO BUENO'
-    cfdi.receptor.rfc = 'XAXX010101000'
-    cfdi.receptor.domicilio_fiscal = '06000'
-    cfdi.receptor.regimen_fiscal = '616'
-    cfdi.receptor.uso_cfdi = 'G03'
-    cfdi
-  end
-
-  def simple_cfdi
-    # Minimum data is only one 'concepto' and a name for 'Receptor'
-    # 'Emisor' data and 'Certificado' can be readed from a yml file
-    cfdi = cfdi_base
-    cfdi.add_concepto(
-      clave_prod_serv: '81111500',
-      clave_unidad: "E48",
-      descripcion: 'Prueba de concepto',
-      precio_neto: 40
-    )
-    cfdi
-  end
-
-  def simple_cfdi_with_key_cert_path
-    cfdi = simple_cfdi
-    cfdi.cert_path = 'test/files/cert1.cer'
-    cfdi.key_path = 'test/files/key1.key'
-    cfdi.key_pass = '12345678a'
-    cfdi
-  end
-
-  def simple_cfdi_with_key_cert_der
-    cfdi = simple_cfdi
-    cfdi.cert_der = File.read('test/files/cert1.cer')
-    cfdi.key_der = File.read('test/files/key1.key')
-    cfdi.key_pass = '12345678a'
-    cfdi
-  end
-
   def test_that_generate_original_content_string
     cfdi = simple_cfdi_with_key_cert_path
     assert_match(/\A||.*||\z/, cfdi.original_content)
@@ -117,16 +78,6 @@ class TestCfdi40 < Minitest::Test
     cfdi.key_path = 'test/files/key2.key'
     cfdi.key_pass = '12345678a'
     assert_raises(Cfdi40::Error, 'Key and certificate not match') { cfdi.sign }
-  end
-
-  def simple_concepto
-    {
-      clave_prod_serv: '81111500',
-      clave_unidad: "E48",
-      descripcion: 'Prueba de concepto',
-      cantidad: 3,
-      precio_neto: 40
-    }
   end
 
   def test_that_calculate_default_taxes
@@ -205,4 +156,20 @@ class TestCfdi40 < Minitest::Test
   end
 
   # TODO: Conceptos con diferente tasa de impuestos
+
+  def test_that_generate_cfdi_with_inst_educativas_node
+    cfdi = cfdi_with_iedu
+    xml = REXML::Document.new(cfdi.to_xml)
+    node_path = 'cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto/cfdi:ComplementoConcepto/iedu:instEducativas'
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal '1.0', node["version"]
+    assert_equal 'SANCHEZ SOTRES KARLA MARIA', node["nombreAlumno"]
+    assert_equal 'SASK020520MDFNTRC1', node["CURP"]
+    assert_equal 'Bachillerato o su equivalente', node["nivelEducativo"]
+    assert_equal "DGETI20089996", node["autRVOE"]
+    assert_equal "XAXX010101000", node["rfcPago"]
+    cfdi.valid?
+    assert_equal [], cfdi.errors
+  end
 end

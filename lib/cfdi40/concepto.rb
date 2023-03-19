@@ -19,6 +19,9 @@ module Cfdi40
     attr_accessor :tasa_iva, :tasa_ieps, :precio_neto, :precio_bruto
     attr_reader :iva, :ieps, :base_iva, :importe_neto, :importe_bruto
 
+    # accesors for instEducativas
+    attr_accessor :iedu_nombre_alumno, :iedu_curp, :iedu_nivel_educativo, :iedu_aut_rvoe, :iedu_rfc_pago
+
     def initialize
       @tasa_iva = 0.16
       @tasa_ieps = 0
@@ -40,6 +43,7 @@ module Cfdi40
       end
       add_info_to_traslado_iva
       # TODO: add_info_to_traslado_ieps if @ieps > 0
+      add_inst_educativas
       true
     end
 
@@ -113,6 +117,7 @@ module Cfdi40
       return if @impuestos_node
 
       @impuestos_node = Impuestos.new
+      @impuestos_node.parent_node = self
       self.children_nodes << @impuestos_node
       @impuestos_node
     end
@@ -121,6 +126,39 @@ module Cfdi40
       return nil unless impuestos_node.is_a?(Impuestos)
 
       impuestos_node.traslado_iva
+    end
+
+    def add_inst_educativas
+      return unless inst_educativas_present?
+
+      inst_educativas_node.nombre_alumno = iedu_nombre_alumno
+      inst_educativas_node.curp = iedu_curp
+      inst_educativas_node.nivel_educativo = iedu_nivel_educativo
+      inst_educativas_node.aut_rvoe = iedu_aut_rvoe
+      inst_educativas_node.rfc_pago = iedu_rfc_pago
+    end
+
+    def inst_educativas_present?
+      return false if iedu_nombre_alumno.nil?
+      return false if iedu_nivel_educativo.nil?
+      return false if iedu_aut_rvoe.nil?
+
+      true
+    end
+
+    def concepto_complemento_node
+      return @complemento_concepto_node if defined?(@complemento_concepto_node)
+
+      @complemento_concepto_node = ComplementoConcepto.new
+      @complemento_concepto_node.parent_node = self
+      self.children_nodes << @complemento_concepto_node
+      @complemento_concepto_node
+    end
+
+    def inst_educativas_node
+      return nil unless concepto_complemento_node.is_a?(ComplementoConcepto)
+
+      concepto_complemento_node.inst_educativas_node
     end
   end
 end

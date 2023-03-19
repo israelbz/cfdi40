@@ -7,6 +7,7 @@ module Cfdi40
       return @traslados if defined?(@traslados)
 
       @traslados = Traslados.new
+      @traslados.parent_node = self
       self.children_nodes << @traslados
       @traslados
     end

@@ -6,9 +6,13 @@ In order to avoid innecesary and redundant reading from SAT site the
 file `cfdv40.xsd` referenced in cfdi standard, has been
 prepared for local access.
 
-The `cfdv40.xsd` has been modified to reference the local files
-`tdCFDI.xsd`, `catCFDI.xsd` which are imported schemas. The schema
-`catCFDI.xsd` has 5.8MB
+The `cfdv40.xsd` has been modified to reference the local files:
+
+* `tdCFDI.xsd`,
+* `catCFDI.xsd` this file has 5.8MB
+* `iedu.xsd`
+
+Local files are imported schemas.
 
 ## Use external files
 

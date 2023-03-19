@@ -15,6 +15,8 @@ require_relative "cfdi40/concepto"
 require_relative "cfdi40/impuestos"
 require_relative "cfdi40/traslados"
 require_relative "cfdi40/traslado"
+require_relative "cfdi40/complemento_concepto"
+require_relative "cfdi40/inst_educativas"
 
 # Leading module and entry point for all features and classes
 #

@@ -1,7 +1,8 @@
 module Cfdi40
   class Node
     # Nokigir XML Document for the xml_node
-    attr_accessor :xml_document, :xml_parent, :children_nodes
+    attr_accessor :xml_document, :xml_parent, :children_nodes, :parent_node
+    attr_writer :element_name
 
     def initialize
       self.class.verify_class_variables
@@ -20,6 +21,7 @@ module Cfdi40
       @@default_values[name] ||= {}
       @@formats ||= {}
       @@formats[name] ||= {}
+      @@element_names ||= {}
     end
 
     def self.define_attribute(accessor, xml_attribute:, default: nil, format: nil, readonly: false)
@@ -43,6 +45,11 @@ module Cfdi40
       @@namespaces[name][namespace] = value
     end
 
+    def self.define_element_name(value)
+      verify_class_variables
+      @@element_names[name] = value.to_s
+    end
+
     def self.namespaces
       @@namespaces[name]
     end
@@ -57,6 +64,11 @@ module Cfdi40
 
     def self.formats
       @@formats[name]
+    end
+
+    def self.element_name
+      verify_class_variables
+      @@element_names[name]
     end
 
     def set_defaults
@@ -75,16 +87,37 @@ module Cfdi40
       instance_variable_get("@#{accessor}".to_sym).nil?
     end
 
+    def current_namespace
+      return unless self.class.respond_to?(:namespaces)
+      if self.class.namespaces.empty?
+        return parent_node.current_namespace unless parent_node.nil?
+      end
+
+      self.class.namespaces.keys.last
+    end
+
     def create_xml_node
       set_defaults
       if self.respond_to?(:before_add, true)
         self.before_add
       end
-      xml_node = xml_document.create_element("cfdi:#{self.class.name.split('::').last}")
+      xml_node = xml_document.create_element(expanded_element_name)
       add_namespaces_to(xml_node)
       add_attributes_to(xml_node)
       add_children_to(xml_node)
       xml_parent.add_child xml_node
+    end
+
+    # Returns setted @element_name or use class_name
+    def element_name
+      return self.class.element_name unless self.class.element_name.nil? || self.class.element_name == ''
+
+      self.class.name.split('::').last
+    end
+
+    def expanded_element_name
+      return element_name unless current_namespace
+      "#{current_namespace}:#{element_name}"
     end
 
     def add_namespaces_to(xml_node)

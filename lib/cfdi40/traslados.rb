@@ -6,6 +6,7 @@ module Cfdi40
       @traslado_iva = Traslado.new
       # TODO: FIX magic number
       @traslado_iva.impuesto = '002'
+      @traslado_iva.parent_node = self
       self.children_nodes << @traslado_iva
       @traslado_iva
     end

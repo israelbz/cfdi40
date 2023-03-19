@@ -32,14 +32,17 @@ module Cfdi40
 
     attr_reader :emisor, :receptor, :x509_cert, :conceptos, :private_key
     attr_reader :errors
-    attr_writer :key_der, :key_pass
+    attr_writer :key_data, :key_pass
 
     def initialize
       super
       @errors = []
       @conceptos = Conceptos.new
+      @conceptos.parent_node = self
       @emisor = Emisor.new
+      @emisor.parent_node = self
       @receptor = Receptor.new
+      @receptor.parent_node = self
       @sat_csd = SatCsd.new
       @fecha ||= Time.now.strftime("%Y-%m-%dT%H:%M:%S")
       @children_nodes = [@emisor, @receptor, @conceptos]
@@ -64,7 +67,7 @@ module Cfdi40
     end
 
     def key_path=(path)
-      @key_der = File.read(path)
+      @key_data = File.read(path)
     end
 
     def sign
@@ -89,8 +92,11 @@ module Cfdi40
     # importe
     # descuento
     # objeto_imp
+    #
+    # TODO: Document accepted attributes and its use
     def add_concepto(attributes = {})
       concepto = Concepto.new
+      concepto.parent_node = @conceptos
       attributes.each do |key, value|
         method_name = "#{key}=".to_sym
         if concepto.respond_to?(method_name)
@@ -154,15 +160,18 @@ module Cfdi40
     def calculate!
       @subtotal = @conceptos.children_nodes.map(&:importe).sum
       @total = @conceptos.children_nodes.map(&:importe_neto).sum
-      summarize_traslados
+      add_traslados_summary_node
     end
 
-    def summarize_traslados
+    def add_traslados_summary_node
+      return if traslados_summary.empty?
+
       impuestos.total_impuestos_trasladados = 0
       traslados.children_nodes = []
       traslados_summary.each do |key, value|
         #TODO: Sumar los impuestos y agregarlos a los nodos globales de traslados
         traslado = Traslado.new
+        traslado.parent_node = impuestos
         traslado.impuesto, traslado.tasa_o_cuota, traslado.tipo_factor = key
         traslado.base = value[:base]
         traslado.importe = value[:importe]
@@ -196,6 +205,7 @@ module Cfdi40
       return @impuestos if defined?(@impuestos)
 
       @impuestos = Impuestos.new
+      @impuestos.parent_node = self
       @children_nodes << @impuestos
       @impuestos
     end
@@ -216,10 +226,10 @@ module Cfdi40
     end
 
     def load_private_key
-      return unless defined?(@key_der) && defined?(@key_pass)
+      return unless defined?(@key_data) && defined?(@key_pass)
       
       @sat_csd ||= SatCsd.new
-      @sat_csd.set_crypted_private_key(@key_der, @key_pass)
+      @sat_csd.set_private_key(@key_data, @key_pass)
     end
   end
 end

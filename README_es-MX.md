@@ -24,7 +24,7 @@ que esta herramienta:
     # Inicia un cfdi
     cfdi = Cfdi40.new
 
-    # Datos del emisor
+    # Datos del emisor. RFC y Nombre se extraen del certificado
     cfdi.lugar_expedicion = '06000'
     cfdi.emisor.regimen_fiscal = '612'
 
@@ -53,6 +53,28 @@ que esta herramienta:
     # Genera CFDI firmado
     xml_string = cfdi.to_xml
 
+# Cambios
+
+# 0.0.3
+
+* Lee RFC en certificados de personas morales. Los certificados de
+  personas morales tienen el RFC de la persona moral y el del
+  representante legal en el `UniqueIdentifier` del `Subject` del
+  certificado
+* Actepta llaves previamente descifradas en formato PEM.
+
+# 0.0.2
+
+* Definición básica de la intefaz.
+* Carga certificado y llave desde archivo.
+* Acepta certificado y llave previamente leídos.
+* Genera CFDI de ingresos básico. Con desglose de impuestos, sello
+  digital
+* Valida correspondencia de certificado y llave
+
+# 0.0.1
+
+* Versión inicial. Esqueleto para desarrollo
 
 # ¿Que sigue?
 

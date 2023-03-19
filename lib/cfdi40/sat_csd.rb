@@ -13,12 +13,12 @@ module Cfdi40
     end
 
     def load_private_key(key_path, key_pass)
-      key_pem = load_key_to_pem(File.read(key_path))
+      key_pem = key_to_pem(File.read(key_path))
       @private_key = OpenSSL::PKey::RSA.new(key_pem, key_pass)
     end
 
-    def set_crypted_private_key(key_der, key_pass)
-      key_pem = load_key_to_pem(key_der)
+    def set_private_key(key_data, key_pass = nil)
+      key_pem = (pem_format?(key_data) ? key_data : key_to_pem(key_data))
       @private_key = OpenSSL::PKey::RSA.new(key_pem, key_pass)
     end
 
@@ -28,7 +28,7 @@ module Cfdi40
       unique_identifier = subject_data.select { |data| data[0] == "x500UniqueIdentifier" }.first
       return unless unique_identifier
 
-      unique_identifier[1]
+      unique_identifier[1].split(" / ").first
     end
 
     def name
@@ -72,12 +72,18 @@ module Cfdi40
       x509_cert.subject.to_a
     end
 
-    def load_key_to_pem(key_der)
+    def key_to_pem(key_der)
       array_key_pem = []
       array_key_pem << '-----BEGIN ENCRYPTED PRIVATE KEY-----'
       array_key_pem += Base64.strict_encode64(key_der).scan(/.{1,64}/)
       array_key_pem << '-----END ENCRYPTED PRIVATE KEY-----'
       array_key_pem.join("\n")
+    end
+
+    def pem_format?(data)
+      return false unless data.valid_encoding?
+
+      data.match?(/BEGIN/)
     end
   end
 end
