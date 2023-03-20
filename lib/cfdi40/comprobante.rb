@@ -133,7 +133,8 @@ module Cfdi40
     end
 
     def original_content
-      xslt = Nokogiri::XSLT(File.open('lib/xslt/cadenaoriginal_local.xslt'))
+      xslt_path = File.join(File.dirname(__FILE__), '..', '..', 'lib/xslt/cadenaoriginal_local.xslt')
+      xslt = Nokogiri::XSLT(File.open(xslt_path))
       transformed = xslt.transform(docxml)
       # The ampersand (&) char must be used in original content
       # even though the documentation indicates otherwise
@@ -226,10 +227,10 @@ module Cfdi40
     end
 
     def load_private_key
-      return unless defined?(@key_data) && defined?(@key_pass)
+      return unless defined?(@key_data)
       
       @sat_csd ||= SatCsd.new
-      @sat_csd.set_private_key(@key_data, @key_pass)
+      @sat_csd.set_private_key(@key_data, (defined?(@key_pass) ? @key_pass : nil))
     end
   end
 end
