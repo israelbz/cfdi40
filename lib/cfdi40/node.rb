@@ -147,6 +147,8 @@ module Cfdi40
       case self.class.formats[accessor]
       when :t_Importe
         sprintf("%0.6f", public_send(accessor).to_f)
+      when :t_ImporteMXN
+        sprintf("%0.2f", public_send(accessor).to_f)
       else
         public_send(accessor)
       end

@@ -155,6 +155,14 @@ class TestCfdi40 < Minitest::Test
     assert_equal [], cfdi.errors
   end
 
+  def test_that_subtotal_and_total_has_two_decimals
+    cfdi = simple_cfdi_with_key_cert_path
+    xml = REXML::Document.new(cfdi.to_xml)
+    node = REXML::XPath.first(xml, 'cfdi:Comprobante')
+    assert_equal '34.48', node["SubTotal"]
+    assert_equal '40.00', node["Total"]
+  end
+
   # TODO: Conceptos con diferente tasa de impuestos
 
   def test_that_generate_cfdi_with_inst_educativas_node

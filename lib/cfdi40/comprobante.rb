@@ -19,11 +19,11 @@ module Cfdi40
     define_attribute :no_certificado, xml_attribute: 'NoCertificado'
     define_attribute :certificado, xml_attribute: 'Certificado'
     define_attribute :condiciones_de_pago, xml_attribute: 'CondicionesDePago'
-    define_attribute :subtotal, xml_attribute: 'SubTotal', format: :t_Importe
-    define_attribute :descuento, xml_attribute: 'Descuento', format: :t_Importe
+    define_attribute :subtotal, xml_attribute: 'SubTotal', format: :t_ImporteMXN
+    define_attribute :descuento, xml_attribute: 'Descuento', format: :t_ImporteMXN
     define_attribute :moneda, xml_attribute: 'Moneda', default: 'MXN'
     define_attribute :tipo_cambio, xml_attribute: 'TipoCambio'
-    define_attribute :total, xml_attribute: 'Total', format: :t_Importe
+    define_attribute :total, xml_attribute: 'Total', format: :t_ImporteMXN
     define_attribute :tipo_de_comprobante, xml_attribute: 'TipoDeComprobante', default: 'I'
     define_attribute :exportacion, xml_attribute: 'Exportacion', default: '01'
     define_attribute :metodo_pago, xml_attribute: 'MetodoPago'
