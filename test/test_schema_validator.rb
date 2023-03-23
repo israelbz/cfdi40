@@ -11,4 +11,9 @@ class TestSchemaValidator < Minitest::Test
     assert_equal [], validator.errors
   end
 
+  def test_that_validates_a_xml_with_timbre_fiscal
+    validator = Cfdi40::SchemaValidator.new(File.read('test/files/ejemplo_timbrado.xml'))
+    validator.valid?
+    assert_equal [], validator.errors
+  end
 end
