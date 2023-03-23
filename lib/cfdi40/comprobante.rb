@@ -60,7 +60,7 @@ module Cfdi40
       @sat_csd ||= SatCsd.new
       @sat_csd.cert_der = cert_data
       emisor.rfc = @sat_csd.rfc
-      emisor.nombre = @sat_csd.name
+      emisor.nombre ||= @sat_csd.name
       @no_certificado = @sat_csd.no_certificado
       @certificado = @sat_csd.cert64
       true

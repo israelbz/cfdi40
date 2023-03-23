@@ -8,6 +8,8 @@
 	<xs:import namespace="http://www.sat.gob.mx/sitio_internet/cfd/catalogos" schemaLocation="catCFDI.xsd"/>
 	<xs:import namespace="http://www.sat.gob.mx/sitio_internet/cfd/tipoDatos/tdCFDI" schemaLocation="tdCFDI.xsd"/>
 	<xs:import namespace="http://www.sat.gob.mx/iedu" schemaLocation="iedu.xsd"/>
+  <xs:import namespace="http://www.sat.gob.mx/Pagos20" schemaLocation="Pagos20.xsd"/>
+	<xs:import namespace="http://www.sat.gob.mx/TimbreFiscalDigital" schemaLocation="TimbreFiscalDigitalv11.xsd"/>
 
 	<xs:element name="Comprobante">
 		<xs:annotation>
