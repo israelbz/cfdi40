@@ -1,7 +1,7 @@
 module Cfdi40
   class Impuestos < Node
-    define_attribute :total_impuestos_retenidos, xml_attribute: 'TotalImpuestosRetenidos', format: :t_Importe
-    define_attribute :total_impuestos_trasladados, xml_attribute: 'TotalImpuestosTrasladados', format: :t_Importe
+    define_attribute :total_impuestos_retenidos, xml_attribute: 'TotalImpuestosRetenidos', format: :t_ImporteMXN
+    define_attribute :total_impuestos_trasladados, xml_attribute: 'TotalImpuestosTrasladados', format: :t_ImporteMXN
 
     def traslados
       return @traslados if defined?(@traslados)

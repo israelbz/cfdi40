@@ -180,4 +180,25 @@ class TestCfdi40 < Minitest::Test
     cfdi.valid?
     assert_equal [], cfdi.errors
   end
+
+  def test_total_impuestos_trasladados_has_two_decimals
+    cfdi = simple_cfdi_with_key_cert_path
+    xml = REXML::Document.new(cfdi.to_xml)
+    node = REXML::XPath.first(xml, 'cfdi:Comprobante/cfdi:Impuestos')
+    assert_equal '5.52', node["TotalImpuestosTrasladados"]
+  end
+
+  def test_base_in_node_traslados_has_two_decimals
+    cfdi = simple_cfdi_with_key_cert_path
+    xml = REXML::Document.new(cfdi.to_xml)
+    node = REXML::XPath.first(xml, 'cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados/cfdi:Traslado')
+    assert_equal '34.48', node["Base"]
+  end
+
+  def test_importe_in_node_traslados_has_two_decimals
+    cfdi = simple_cfdi_with_key_cert_path
+    xml = REXML::Document.new(cfdi.to_xml)
+    node = REXML::XPath.first(xml, 'cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados/cfdi:Traslado')
+    assert_equal '5.52', node["Importe"]
+  end
 end
