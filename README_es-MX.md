@@ -14,7 +14,7 @@ que esta herramienta:
   información esencial para la elaboración del CFDi.
 * Realice los cálculos complementarios como impuestos,
   totales, etcétera.
-* Valide el CFDi contra los CSD
+* Valide el CFDi contra los XSD
 * Selle el CFDi.
 
 # Uso
@@ -54,6 +54,23 @@ que esta herramienta:
     xml_string = cfdi.to_xml
 
 # Cambios
+
+# 0.0.5
+
+* IVA tasa 0 e IVA excento. Los conceptos con iva tasa 0 deben llevar el
+  nodo de traslados de impuestos. Los conceptos excentos de iva no
+  llevan el nodo de traslado. Al agregar el concepto usar `nil` para el
+  IVA cuando sea excento.
+* Nuevo cálculo de impuestos e importes. El PAC solo acepta 2 decimales
+  en los nodos de traslado. Esto puede generar discrepancias al sumar
+  los conceptos si no se maneja el mismo número de decimales. Solamente
+  el valor unitario se manejará con 6 decimales.
+
+# 0.0.4
+
+* Atributos 'Total' y 'Subtotal' van con 2 decimales. Aunque el anexo 20
+  indica que el tipo es `t_Importe` (6 decimales) el PAC acepta solo 2
+  decimales si el CFDi está en pesos mexicanos.
 
 # 0.0.3
 

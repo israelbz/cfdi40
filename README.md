@@ -12,6 +12,8 @@ TODO: Document, document, document
 ## Features
 
 * XML generation and sign.
+* Node 'iedu'
+* Concept is calculated from gross price or net price
 
 ## Future features
 

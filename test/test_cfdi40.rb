@@ -88,9 +88,9 @@ class TestCfdi40 < Minitest::Test
     assert_instance_of Cfdi40::Concepto, concepto
     assert_equal 3, concepto.cantidad
     assert_equal 0.16, concepto.tasa_iva
-    assert_in_epsilon 16.551724, concepto.iva, 0.000001
+    assert_in_epsilon 16.551724, concepto.iva, 0.001
     assert_in_epsilon 34.482759, concepto.valor_unitario, 0.000001
-    assert_in_epsilon 103.448276, concepto.importe, 0.000001
+    assert_in_epsilon 103.448276, concepto.importe, 0.001
     assert_equal 120, cfdi.total
   end
 

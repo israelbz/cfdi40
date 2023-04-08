@@ -10,10 +10,10 @@ class TestConcepto < Minitest::Test
     concepto.precio_neto = 30
     concepto.calculate!
     assert_equal 150, concepto.importe_neto
-    assert_in_epsilon 129.310345, concepto.importe_bruto, 0.000001
-    assert_in_epsilon 129.310345, concepto.importe, 0.000001
-    assert_in_epsilon 129.310345, concepto.base_iva, 0.000001
-    assert_in_epsilon 20.689655, concepto.iva, 0.000001
+    assert_in_epsilon 129.310345, concepto.importe_bruto, 0.001
+    assert_in_epsilon 129.310345, concepto.importe, 0.001
+    assert_in_epsilon 129.310345, concepto.base_iva, 0.001
+    assert_in_epsilon 20.689655, concepto.iva, 0.001
     assert_in_epsilon 25.862069, concepto.valor_unitario, 0.000001
     assert_in_epsilon 25.862069, concepto.precio_bruto, 0.000001
   end

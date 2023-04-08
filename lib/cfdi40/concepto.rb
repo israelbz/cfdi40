@@ -62,33 +62,26 @@ module Cfdi40
 
     def calculate_from_net_price
       set_defaults
-      @importe_neto = precio_neto * cantidad
-      breakdown_taxes
+      @precio_neto = @precio_neto.round(2)
+      @precio_bruto = (@precio_neto / ((1 + tasa_iva.to_f) * (1 + tasa_ieps.to_f))).round(6)
+      calculate_taxes
       update_xml_attributes
-    end
-
-    def breakdown_taxes
-      @base_iva = @importe_neto / (1 + tasa_iva.to_f)
-      @iva = @importe_neto - @base_iva
-      @base_ieps = @base_iva / (1 + tasa_ieps.to_f)
-      @ieps = @base_iva - @base_ieps 
-      @importe_bruto = @base_ieps
-      @precio_bruto = @importe_bruto / @cantidad
     end
 
     def calculate_from_gross_price
-      @importe_bruto = @precio_bruto * cantidad
-      add_taxes
+      @precio_bruto = @precio_bruto.round(6)
+      calculate_taxes
+      @precio_neto = (@importe_neto / cantidad).round(2)
       update_xml_attributes
     end
 
-    def add_taxes
-      @base_ieps = @importe_bruto
-      @ieps = @base_ieps * tasa_ieps.to_f
-      @base_iva = @base_ieps + @ieps
-      @iva = @base_iva * tasa_iva.to_f
-      @importe_neto = @base_iva + @iva
-      @precio_neto = @importe_neto / cantidad
+    def calculate_taxes
+      @base_ieps = (@precio_bruto * cantidad).round(2)
+      @ieps = (@base_ieps * tasa_ieps.to_f).round(2)
+      @base_iva = (@base_ieps + @ieps).round(2)
+      @iva = (@base_iva * tasa_iva.to_f).round(2)
+      @importe_bruto = @base_ieps
+      @importe_neto = (@base_iva + @iva).round(2)
     end
 
     def update_xml_attributes
