@@ -1,6 +1,6 @@
 # Represents node 'concepto'
 #
-# * Attribute +Importe+ represente gross amount. Gross amount id before taxes and the result of multiply
+# * Attribute +Importe+ represente gross amount. Gross amount is before taxes and the result of multiply
 #   +ValorUnitario+ by +Cantidad+
 #   
 module Cfdi40
@@ -24,7 +24,7 @@ module Cfdi40
 
     def initialize
       @tasa_iva = 0.16
-      @tasa_ieps = 0
+      @tasa_ieps = nil
       super
     end
 
@@ -33,6 +33,7 @@ module Cfdi40
     def calculate!
       set_defaults
       assign_objeto_imp
+      # TODO: accept discount
       if defined?(@precio_neto) && !@precio_neto.nil?
         calculate_from_net_price
       elsif defined?(@precio_bruto) && !@precio_bruto.nil?
@@ -67,9 +68,9 @@ module Cfdi40
     end
 
     def breakdown_taxes
-      @base_iva = @importe_neto / (1 + tasa_iva)
+      @base_iva = @importe_neto / (1 + tasa_iva.to_f)
       @iva = @importe_neto - @base_iva
-      @base_ieps = @base_iva / (1 + tasa_ieps)
+      @base_ieps = @base_iva / (1 + tasa_ieps.to_f)
       @ieps = @base_iva - @base_ieps 
       @importe_bruto = @base_ieps
       @precio_bruto = @importe_bruto / @cantidad
@@ -83,9 +84,9 @@ module Cfdi40
 
     def add_taxes
       @base_ieps = @importe_bruto
-      @ieps = @base_ieps * tasa_ieps
+      @ieps = @base_ieps * tasa_ieps.to_f
       @base_iva = @base_ieps + @ieps
-      @iva = @base_iva * tasa_iva
+      @iva = @base_iva * tasa_iva.to_f
       @importe_neto = @base_iva + @iva
       @precio_neto = @importe_neto / cantidad
     end
@@ -96,7 +97,7 @@ module Cfdi40
     end
 
     def add_info_to_traslado_iva
-      return unless @iva > 0
+      return if @tasa_iva.nil?
 
       traslado_iva_node.importe = @iva
       traslado_iva_node.base = @base_iva
@@ -104,9 +105,13 @@ module Cfdi40
     end
 
     def assign_objeto_imp
+      #01 No objeto de impuesto.
+      #02  Sí objeto de impuesto.
+      #03  Sí objeto del impuesto y no obligado al desglose.
+
       return if objeto_impuestos == '03'
 
-      self.objeto_impuestos = (@tasa_iva > 0 || @tasa_ieps > 0 ? '02' : '01')
+      self.objeto_impuestos = (!@tasa_iva.nil? || !@tasa_ieps.nil? ? '02' : '01')
     end
 
     def impuestos_node

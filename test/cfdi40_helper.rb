@@ -56,7 +56,7 @@ module Cfdi40Helper
       clave_unidad: "E48",
       descripcion: 'COLEGIATURA NOVIEMBRE 2020',
       precio_neto: 950,
-      tasa_iva: 0,
+      tasa_iva: nil,
       iedu_nombre_alumno: "SANCHEZ SOTRES KARLA MARIA",
       iedu_curp: "SASK020520MDFNTRC1",
       iedu_nivel_educativo: "Bachillerato o su equivalente",

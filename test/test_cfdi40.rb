@@ -110,13 +110,13 @@ class TestCfdi40 < Minitest::Test
     assert_equal '002', node["Impuesto"]
     assert_equal 'Tasa', node["TipoFactor"]
     assert_equal '0.160000', node["TasaOCuota"]
-    assert_equal '103.448276', node["Base"]
-    assert_equal '16.551724', node["Importe"]
+    assert_equal '103.45', node["Base"]
+    assert_equal '16.55', node["Importe"]
   end
 
   def test_that_not_include_taxes_node
     cfdi = cfdi_base
-    cfdi.add_concepto(simple_concepto.merge(tasa_iva: 0))
+    cfdi.add_concepto(simple_concepto.merge(tasa_iva: nil))
     xml = REXML::Document.new(cfdi.to_s)
     node_path = 'cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto'
     assert_instance_of REXML::Element, REXML::XPath.first(xml, node_path)
@@ -142,15 +142,18 @@ class TestCfdi40 < Minitest::Test
     node_path = 'cfdi:Comprobante/cfdi:Impuestos'
     node = REXML::XPath.first(xml, node_path)
     assert_instance_of REXML::Element, node
-    assert_equal '21.517241', node['TotalImpuestosTrasladados']
+    assert_in_epsilon 21.517241, node['TotalImpuestosTrasladados'].to_f, 0.005
+    assert_equal '21.52', node['TotalImpuestosTrasladados']
     node_path += '/cfdi:Traslados/cfdi:Traslado'
     node = REXML::XPath.first(xml, node_path)
     assert_instance_of REXML::Element, node
     assert_equal '002', node["Impuesto"]
     assert_equal 'Tasa', node["TipoFactor"]
     assert_equal '0.160000', node["TasaOCuota"]
-    assert_equal '134.482759', node["Base"]
-    assert_equal '21.517241', node["Importe"]
+    assert_in_epsilon 134.482759, node["Base"].to_f, 0.005
+    assert_equal '134.48', node["Base"]
+    assert_in_epsilon 21.517241, node["Importe"].to_f, 0.005
+    assert_equal '21.52', node["Importe"]
     cfdi.valid?
     assert_equal [], cfdi.errors
   end

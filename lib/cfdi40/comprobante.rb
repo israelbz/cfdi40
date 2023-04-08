@@ -82,18 +82,42 @@ module Cfdi40
       @docxml = nil
     end
 
-    # clave_prod_serv
-    # no_identificacion
-    # cantidad
-    # clave_unidad
-    # unidad
-    # descripcion
-    # valor_unitario
-    # importe
-    # descuento
-    # objeto_imp
+    # ## Required attributes
     #
-    # TODO: Document accepted attributes and its use
+    # +clave_prod_serv+:: From SAT catalogue
+    # +clave_unidad+:: From SAT catalogue
+    # +cantidad+:: Must be greather than 0
+    # +descripcion+:: Product or service description
+    #
+    # ### Price and Taxes attributes
+    # 
+    # +tasa_iva+:: Decimal between 0 and 1. Nil means exempt. Default value is 0.16
+    # +tasa_ieps+:: Decimal between 0 and 1. Nil means exempt. Default value is null
+    # +precio_bruto+:: Price before apply taxes or gross price.
+    #                  All quantities are calculated based on this price and taxes rate.
+    # +precio_neto+:: Precio after taxes or net price. All quantities are calculated from this prices.
+    #                 When both, +precio_neto+ and +precio_bruto+ exist, +precio_neto+ is used
+    #
+    # The most common usage requires only the net price (+precio_neto+).
+    #
+    # ## Optional attributes:
+    # +no_identificacion+::
+    # +unidad+::
+    # +descuento+:: PENDING
+    #
+    # ## Special attributes
+    # 
+    # ### IEDU attributes
+    #
+    # IEDU node (path: cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto/cfdi:ComplementoConcepto/iedu:instEducativas) is
+    # generated when one of +iedu_nombre_alumno+, +iedu_curp+, +iedu_nivel_educativo+ exist.
+    #
+    # +iedu_nombre_alumno+::
+    # +iedu_curp+::
+    # +iedu_nivel_educativo+::
+    # +iedu_aut_rvoe+::
+    # +iedu_rfc_pago+::
+    #
     def add_concepto(attributes = {})
       concepto = Concepto.new
       concepto.parent_node = @conceptos
