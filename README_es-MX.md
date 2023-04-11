@@ -53,7 +53,57 @@ que esta herramienta:
     # Genera CFDI firmado
     xml_string = cfdi.to_xml
 
+## Ejemplo CFDI con complemento de pago
+
+    # Inicia un cfdi
+    cfdi = Cfdi40.new
+    cfdi.tipo_de_comprobante = 'P'
+
+    # Datos del emisor.
+    # RFC y Nombre se extraen del certificado si no existen
+    cfdi.lugar_expedicion = '06000'
+    cfdi.emisor.regimen_fiscal = '612'
+
+    # Datos del receptor
+    cfdi.receptor.nombre = 'JUAN PUEBLO BUENO'
+    cfdi.receptor.rfc = 'XAXX010101000'
+    cfdi.receptor.domicilio_fiscal = '06000'
+    cfdi.receptor.regimen_fiscal = '616'
+    cfdi.receptor.uso_cfdi = 'CP01'
+
+    # Agrega un concepto en pesos,
+    # precio final al cliente (neto)
+    # causa IVA con tasa de 16% (default)
+    cfdi.add_pago(
+      monto: 200.17,
+      uuid: 'e40229b3-5c4b-46fb-9ba8-707df828a5bc',
+      serie: 'A',
+      folio: '12345',
+      num_parcialidad: 2,
+      fecha_pago: '2023-04-01T12:20:34',
+      forma_pago: '01',
+      importe_saldo_anterior: 845.673
+    )
+
+    # Archivos CSD
+    cfdi.cert_path = '/path_to/certificado.cer'
+    cfdi.key_path = '/path_to/llave_privada.key'
+    cfdi.key_pass = 'contraseña'
+
+    # Genera CFDI firmado
+    xml_string = cfdi.to_xml
+
+
+# Lo que sigue
+
+* Nodo de Traslados cuando hay tasa de IEPS
+* Retenciones de impuestos
+* CFDI de pagos con varios pagos y varios documentos en cada pago
+
 # Cambios
+
+# 0.0.6
+* CFDi con complemento de pagos
 
 # 0.0.5
 

@@ -119,6 +119,8 @@ module Cfdi40
     # +iedu_rfc_pago+::
     #
     def add_concepto(attributes = {})
+      raise Error, 'CFDi tipo pago no acepta conceptos' if tipo_de_comprobante == 'P'
+
       concepto = Concepto.new
       concepto.parent_node = @conceptos
       attributes.each do |key, value|
@@ -133,6 +135,23 @@ module Cfdi40
       @conceptos.children_nodes << concepto
       calculate!
       concepto
+    end
+
+    # TODO: Doc params add_pago
+    # monto
+    # uuid
+    # folio
+    # serie
+    # num_parcialidad
+    # fecha_pago
+    # forma_pago
+    # importe_saldo_anterior
+    # objeto_impuestos
+    def add_pago(attributes = {})
+      raise Error, "CFDi debe ser tipo 'P'" unless tipo_de_comprobante == 'P'
+
+      add_node_concepto_actividad_pago
+      complemento.add_pago(attributes)
     end
 
     def to_s
@@ -166,6 +185,23 @@ module Cfdi40
     end
 
     private
+
+    def add_node_concepto_actividad_pago
+      return if defined?(@concepto_actividad)
+      
+      @receptor.uso_cfdi = 'CP01'
+      @concepto_actividad = Concepto.new
+      @concepto_actividad.clave_prod_serv = '84111506'
+      @concepto_actividad.cantidad = 1
+      @concepto_actividad.clave_unidad = 'ACT'
+      @concepto_actividad.descripcion = 'Pago'
+      @concepto_actividad.precio_bruto = 0
+      @concepto_actividad.tasa_iva = nil
+      @concepto_actividad.objeto_impuestos = '01'
+      @concepto_actividad.calculate!
+      @conceptos.add_child_node @concepto_actividad
+      calculate!
+    end
 
     def docxml
       return @docxml if defined?(@docxml) && !@docxml.nil?
@@ -245,7 +281,7 @@ module Cfdi40
       impuestos_node.traslados
     end
 
-    # Eliminar
+    # TODO: Eliminar
     def traslado_iva_node
       impuestos_node.traslado_iva
     end
@@ -255,6 +291,15 @@ module Cfdi40
       
       @sat_csd ||= SatCsd.new
       @sat_csd.set_private_key(@key_data, (defined?(@key_pass) ? @key_pass : nil))
+    end
+
+    def complemento
+      return @complemento if defined?(@complemento)
+
+      @complemento = Complemento.new
+      @complemento.parent_node = self
+      @children_nodes << @complemento
+      @complemento
     end
   end
 end

@@ -17,6 +17,17 @@ require_relative "cfdi40/traslados"
 require_relative "cfdi40/traslado"
 require_relative "cfdi40/complemento_concepto"
 require_relative "cfdi40/inst_educativas"
+require_relative "cfdi40/complemento"
+require_relative "cfdi40/pagos"
+require_relative "cfdi40/pago"
+require_relative "cfdi40/docto_relacionado"
+require_relative "cfdi40/impuestos_dr"
+require_relative "cfdi40/traslados_dr"
+require_relative "cfdi40/traslado_dr"
+require_relative "cfdi40/impuestos_p"
+require_relative "cfdi40/traslados_p"
+require_relative "cfdi40/traslado_p"
+require_relative "cfdi40/totales.rb"
 
 # Leading module and entry point for all features and classes
 #

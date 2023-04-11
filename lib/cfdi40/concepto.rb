@@ -71,7 +71,9 @@ module Cfdi40
     def calculate_from_gross_price
       @precio_bruto = @precio_bruto.round(6)
       calculate_taxes
-      @precio_neto = (@importe_neto / cantidad).round(2)
+      # May be can not be rounded with 2 decimals.
+      # Example gross_price = 1.99512
+      @precio_neto = (@importe_neto / cantidad).round(6)
       update_xml_attributes
     end
 

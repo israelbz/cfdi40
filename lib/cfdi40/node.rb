@@ -7,6 +7,7 @@ module Cfdi40
     def initialize
       self.class.verify_class_variables
       @children_nodes = []
+      set_defaults
     end
 
     # Use class variables to define attributes used to create nodes
@@ -87,6 +88,13 @@ module Cfdi40
       instance_variable_get("@#{accessor}".to_sym).nil?
     end
 
+    def add_child_node(child_node)
+      raise Error, 'child_node must be a Node object' unless child_node.is_a?(Node)
+
+      child_node.parent_node = self
+      @children_nodes << child_node
+    end
+
     def current_namespace
       return unless self.class.respond_to?(:namespaces)
       if self.class.namespaces.empty?
@@ -97,7 +105,8 @@ module Cfdi40
     end
 
     def create_xml_node
-      set_defaults
+      # TODO: Quitar la siguiente linea (set_defaults) si funciona poniendo los defaults en initialize
+      # set_defaults
       if self.respond_to?(:before_add, true)
         self.before_add
       end
