@@ -40,6 +40,7 @@ class TestCfdi40Rep < Minitest::Test
   def cfdi_pago
     cfdi = cfdi_base
     cfdi.tipo_de_comprobante = 'P'
+    cfdi.moneda = 'XXX'
 
     cfdi.add_pago(datos_pago)
     cfdi
@@ -86,6 +87,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal 'A', node["Serie"]
     assert_equal '12345', node["Folio"]
     assert_equal 'MXN', node["MonedaDR"]
+    assert_equal '1', node["EquivalenciaDR"]
     assert_equal '2', node["NumParcialidad"]
     assert_equal '845.67', node["ImpSaldoAnt"]
     assert_equal '200.17', node["ImpPagado"]
@@ -166,11 +168,11 @@ class TestCfdi40Rep < Minitest::Test
     node_path = 'cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto'
     node = REXML::XPath.first(xml, node_path)
     assert_instance_of REXML::Element, node
-    assert_equal '0.000000', node["ValorUnitario"]
+    assert_equal '0', node["ValorUnitario"]
     assert_equal '01', node["ObjetoImp"]
     assert_equal 'Pago', node["Descripcion"]
     assert_equal '1', node["Cantidad"]
-    assert_equal '0.000000', node["Importe"]
+    assert_equal '0', node["Importe"]
     assert_equal 'ACT', node["ClaveUnidad"]
     assert_equal '84111506', node["ClaveProdServ"]
   end
@@ -181,6 +183,25 @@ class TestCfdi40Rep < Minitest::Test
     node_path = 'cfdi:Comprobante/cfdi:Receptor'
     node = REXML::XPath.first(xml, node_path)
     assert_equal 'CP01', node["UsoCFDI"]
+  end
+
+  def test_subtotal_and_total_should_be_zero
+    cfdi = cfdi_pago
+    xml = REXML::Document.new(cfdi.to_s)
+    node_path = 'cfdi:Comprobante'
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal '0', node["SubTotal"]
+    assert_equal '0', node["Total"]
+  end
+
+  def test_moneda_attribute_has_fixed_value
+    cfdi = cfdi_pago
+    xml = REXML::Document.new(cfdi.to_s)
+    node_path = 'cfdi:Comprobante'
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal 'XXX', node["Moneda"]
   end
 
   def test_valid_cfdi_complemento_pago

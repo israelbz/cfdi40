@@ -155,9 +155,9 @@ module Cfdi40
     def formated_value(accessor)
       case self.class.formats[accessor]
       when :t_Importe
-        sprintf("%0.6f", public_send(accessor).to_f)
+        public_send(accessor).to_f == 0.0 ? '0' : sprintf("%0.6f", public_send(accessor).to_f)
       when :t_ImporteMXN
-        sprintf("%0.2f", public_send(accessor).to_f)
+        public_send(accessor).to_f == 0.0 ? '0' : sprintf("%0.2f", public_send(accessor).to_f)
       else
         public_send(accessor)
       end

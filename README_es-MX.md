@@ -17,6 +17,12 @@ que esta herramienta:
 * Valide el CFDi contra los XSD
 * Selle el CFDi.
 
+Hasta ahora:
+
+* Genera CFDIs de ingreso básicos con IVA
+* Genera CFDIs con complemento de pago para colegiaturas
+* Genera CFDIs complementos de pago básicos.
+
 # Uso
 
 ## Ejemplo básico
@@ -102,6 +108,9 @@ que esta herramienta:
 
 # Cambios
 
+# 0.0.7
+* Ajustes al CFDi con complemento de pagos por validaciones del PAC.
+
 # 0.0.6
 * CFDi con complemento de pagos
 
@@ -145,7 +154,5 @@ que esta herramienta:
 
 # ¿Que sigue?
 
-* Complemento de pagos
 * Retenciones
-* IEPS
-* Complemento para colegiaturas
+* Complemento de pagos con retenciones
