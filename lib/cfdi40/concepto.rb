@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 # Represents node 'concepto'
 #
 # * Attribute +Importe+ represente gross amount. Gross amount is before taxes and the result of multiply
 #   +ValorUnitario+ by +Cantidad+
-#   
+#
 module Cfdi40
   class Concepto < Node
-    define_attribute :clave_prod_serv, xml_attribute: 'ClaveProdServ'
-    define_attribute :no_identificacion,xml_attribute: 'NoIdentificacion'
-    define_attribute :cantidad, xml_attribute: 'Cantidad', default: 1
-    define_attribute :clave_unidad, xml_attribute: 'ClaveUnidad'
-    define_attribute :unidad, xml_attribute: 'Unidad'
-    define_attribute :descripcion, xml_attribute: 'Descripcion'
-    define_attribute :valor_unitario, xml_attribute: 'ValorUnitario', format: :t_Importe
-    define_attribute :importe, xml_attribute: 'Importe', format: :t_Importe
-    define_attribute :descuento, xml_attribute: 'Descuento', format: :t_Importe
-    define_attribute :objeto_impuestos, xml_attribute: 'ObjetoImp', default: '01'
+    define_attribute :clave_prod_serv, xml_attribute: "ClaveProdServ"
+    define_attribute :no_identificacion, xml_attribute: "NoIdentificacion"
+    define_attribute :cantidad, xml_attribute: "Cantidad", default: 1
+    define_attribute :clave_unidad, xml_attribute: "ClaveUnidad"
+    define_attribute :unidad, xml_attribute: "Unidad"
+    define_attribute :descripcion, xml_attribute: "Descripcion"
+    define_attribute :valor_unitario, xml_attribute: "ValorUnitario", format: :t_Importe
+    define_attribute :importe, xml_attribute: "Importe", format: :t_Importe
+    define_attribute :descuento, xml_attribute: "Descuento", format: :t_Importe
+    define_attribute :objeto_impuestos, xml_attribute: "ObjetoImp", default: "01"
 
     attr_accessor :tasa_iva, :tasa_ieps, :precio_neto, :precio_bruto
     attr_reader :iva, :ieps, :base_iva, :importe_neto, :importe_bruto
@@ -38,7 +40,7 @@ module Cfdi40
         calculate_from_net_price
       elsif defined?(@precio_bruto) && !@precio_bruto.nil?
         calculate_from_gross_price
-      elsif !self.valor_unitario.nil?
+      elsif !valor_unitario.nil?
         @precio_bruto = valor_unitario
         calculate_from_gross_price
       end
@@ -49,13 +51,23 @@ module Cfdi40
     end
 
     def objeto_impuestos?
-      objeto_impuestos == '02'
+      objeto_impuestos == "02"
     end
 
     def traslado_nodes
       return [] if impuestos_node.nil?
 
       impuestos_node.traslado_nodes
+    end
+
+    def traslado_iva_node
+      return nil unless impuestos_node.is_a?(Impuestos)
+
+      impuestos_node.traslado_iva
+    end
+
+    def load_traslado_iva(ng_node)
+      traslado_iva_node.load_from_ng_node(ng_node)
     end
 
     private
@@ -100,13 +112,13 @@ module Cfdi40
     end
 
     def assign_objeto_imp
-      #01 No objeto de impuesto.
-      #02  Sí objeto de impuesto.
-      #03  Sí objeto del impuesto y no obligado al desglose.
+      # 01 No objeto de impuesto.
+      # 02 Sí objeto de impuesto.
+      # 03 Sí objeto del impuesto y no obligado al desglose.
 
-      return if objeto_impuestos == '03'
+      return if objeto_impuestos == "03"
 
-      self.objeto_impuestos = (!@tasa_iva.nil? || !@tasa_ieps.nil? ? '02' : '01')
+      self.objeto_impuestos = (!@tasa_iva.nil? || !@tasa_ieps.nil? ? "02" : "01")
     end
 
     def impuestos_node
@@ -118,14 +130,8 @@ module Cfdi40
 
       @impuestos_node = Impuestos.new
       @impuestos_node.parent_node = self
-      self.children_nodes << @impuestos_node
+      children_nodes << @impuestos_node
       @impuestos_node
-    end
-
-    def traslado_iva_node
-      return nil unless impuestos_node.is_a?(Impuestos)
-
-      impuestos_node.traslado_iva
     end
 
     def add_inst_educativas
@@ -151,7 +157,7 @@ module Cfdi40
 
       @complemento_concepto_node = ComplementoConcepto.new
       @complemento_concepto_node.parent_node = self
-      self.children_nodes << @complemento_concepto_node
+      children_nodes << @complemento_concepto_node
       @complemento_concepto_node
     end
 

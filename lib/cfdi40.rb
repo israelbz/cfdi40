@@ -27,7 +27,8 @@ require_relative "cfdi40/traslado_dr"
 require_relative "cfdi40/impuestos_p"
 require_relative "cfdi40/traslados_p"
 require_relative "cfdi40/traslado_p"
-require_relative "cfdi40/totales.rb"
+require_relative "cfdi40/totales"
+require_relative "cfdi40/xml_loader"
 
 # Leading module and entry point for all features and classes
 #
@@ -39,5 +40,10 @@ module Cfdi40
 
   def self.new
     Comprobante.new
+  end
+
+  def self.open(xml_string, mode: :readwrite)
+    loader = XmlLoader.new(xml_string)
+    loader.cfdi
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cfdi40
   class ImpuestosDR < Node
     def traslados_dr

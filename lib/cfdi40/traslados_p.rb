@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cfdi40
   class TrasladosP < Node
     def add_traslado_p_nodes

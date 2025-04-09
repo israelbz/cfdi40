@@ -4,7 +4,6 @@ require "test_helper"
 require "rexml/document"
 
 class TestInstEducativas < Minitest::Test
-
   # Create a +instEducativas+ as a root node in a simple xml document.
   def inst_educativas_with_document
     doc_xml = Nokogiri::XML::Document.new("1.0")
@@ -17,17 +16,20 @@ class TestInstEducativas < Minitest::Test
   def test_version
     inst_educativas = inst_educativas_with_document
     inst_educativas.create_xml_node
-    assert_equal '1.0', inst_educativas.version
+
+    assert_equal "1.0", inst_educativas.version
   end
 
   def test_that_use_its_own_namespace
     inst_educativas = inst_educativas_with_document
-    assert 'iedu', inst_educativas.current_namespace
+
+    assert_equal "iedu", inst_educativas.current_namespace
     inst_educativas.create_xml_node
     xml = REXML::Document.new(inst_educativas.xml_document.to_xml)
-    assert_equal 'instEducativas', xml.root.name
-    assert_equal 'http://www.sat.gob.mx/iedu', xml.root.attributes["iedu"]
-    assert_equal 'http://www.sat.gob.mx/iedu http://www.sat.gob.mx/sitio_internet/cfd/iedu/iedu.xsd',
+
+    assert_equal "instEducativas", xml.root.name
+    assert_equal "http://www.sat.gob.mx/iedu", xml.root.attributes["iedu"]
+    assert_equal "http://www.sat.gob.mx/iedu http://www.sat.gob.mx/sitio_internet/cfd/iedu/iedu.xsd",
                  xml.root.attributes["schemaLocation"]
   end
 
@@ -40,6 +42,7 @@ class TestInstEducativas < Minitest::Test
     inst_educativas.rfc_pago = "SONL6308063D9"
     inst_educativas.create_xml_node
     xml = REXML::Document.new(inst_educativas.xml_document.to_xml)
+
     assert_equal "1.0", xml.root.attributes["version"]
     assert_equal "SANCHEZ SOTRES KARLA MARIA", xml.root.attributes["nombreAlumno"]
     assert_equal "SASK020520MDFNTRC1", xml.root.attributes["CURP"]

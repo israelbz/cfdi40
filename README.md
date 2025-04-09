@@ -49,6 +49,16 @@ install`. To release a new version, update the version number in
 a git tag for the version, push git commits and the created tag, and
 push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Testing
+
+Run all test
+
+    bundle exec rake test
+
+Run all test in a file
+
+    bundle exec ruby -Ilib:test test/test_cfdi40.rb
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at

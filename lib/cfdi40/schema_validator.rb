@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Validates Schema Using xsd files
 module Cfdi40
   class SchemaValidator
@@ -6,7 +8,8 @@ module Cfdi40
     # schema = Nokogiri::XML::Schema(File.open("/home/israel/git/cfdi40/lib/xsd/cfdv40.xsd"), options)
 
     attr_reader :errors
-    LOCAL_XSD_PATH = File.join(File.dirname(__FILE__), '..', 'xsd', 'cfdv40.xsd')
+
+    LOCAL_XSD_PATH = File.join(File.dirname(__FILE__), "..", "xsd", "cfdv40.xsd")
 
     # Param xml is xml string
     def initialize(xml)

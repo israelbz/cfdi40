@@ -99,6 +99,14 @@ Hasta ahora:
     # Genera CFDI firmado
     xml_string = cfdi.to_xml
 
+# Cargar un CFDI a partir de un XML:
+
+    # cfdi.xml es un archivo con un CFDi versión 4.0
+    xml_string = File.read('cfdi.xml')
+    cfdi = Cfdi40.open(xml_string)
+
+Una vez cargado el xml se pueden leer los atributos
+y/o hacer modificaciones
 
 # Lo que sigue
 
@@ -107,6 +115,9 @@ Hasta ahora:
 * CFDI de pagos con varios pagos y varios documentos en cada pago
 
 # Cambios
+
+# 0.0.8
+* Carga básica de un CFDI desde XML.
 
 # 0.0.7
 * Ajustes al CFDi con complemento de pagos por validaciones del PAC.

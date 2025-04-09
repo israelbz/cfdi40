@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Cfdi40
   class Node
-    # Nokigir XML Document for the xml_node
+    # Nokigiri XML Document for the xml_node
     attr_accessor :xml_document, :xml_parent, :children_nodes, :parent_node
     attr_writer :element_name
 
@@ -33,12 +35,10 @@ module Cfdi40
         attr_accessor accessor.to_sym
       end
       @@attributes[name][accessor.to_sym] = xml_attribute
-      if default
-        @@default_values[name][accessor.to_sym] = default
-      end
-      if format
-        @@formats[name][accessor.to_sym] = format
-      end
+      @@default_values[name][accessor.to_sym] = default if default
+      return unless format
+
+      @@formats[name][accessor.to_sym] = format
     end
 
     def self.define_namespace(namespace, value)
@@ -89,7 +89,7 @@ module Cfdi40
     end
 
     def add_child_node(child_node)
-      raise Error, 'child_node must be a Node object' unless child_node.is_a?(Node)
+      raise Error, "child_node must be a Node object" unless child_node.is_a?(Node)
 
       child_node.parent_node = self
       @children_nodes << child_node
@@ -97,19 +97,28 @@ module Cfdi40
 
     def current_namespace
       return unless self.class.respond_to?(:namespaces)
-      if self.class.namespaces.empty?
-        return parent_node.current_namespace unless parent_node.nil?
-      end
+
+      return parent_node.current_namespace if self.class.namespaces.empty? && !parent_node.nil?
 
       self.class.namespaces.keys.last
+    end
+
+    # Load attributes from a Nokogiri::XML::Element.
+    # Attributes are loaded directly to the instance variable
+    def load_from_ng_node(ng_node)
+      # TODO: Se puede cargar el certificado
+      # x509_cert = OpenSSL::X509::Certificate.new(Base64.decode64(<valor del atributo>))
+      self.class.attributes.each do |variable_name, attr_name|
+        next if ng_node.attributes[attr_name].nil?
+
+        instance_variable_set("@#{variable_name}".to_sym, ng_node.attributes[attr_name].value)
+      end
     end
 
     def create_xml_node
       # TODO: Quitar la siguiente linea (set_defaults) si funciona poniendo los defaults en initialize
       # set_defaults
-      if self.respond_to?(:before_add, true)
-        self.before_add
-      end
+      before_add if respond_to?(:before_add, true)
       xml_node = xml_document.create_element(expanded_element_name)
       add_namespaces_to(xml_node)
       add_attributes_to(xml_node)
@@ -119,13 +128,14 @@ module Cfdi40
 
     # Returns setted @element_name or use class_name
     def element_name
-      return self.class.element_name unless self.class.element_name.nil? || self.class.element_name == ''
+      return self.class.element_name unless self.class.element_name.nil? || self.class.element_name == ""
 
-      self.class.name.split('::').last
+      self.class.name.split("::").last
     end
 
     def expanded_element_name
       return element_name unless current_namespace
+
       "#{current_namespace}:#{element_name}"
     end
 
@@ -155,9 +165,9 @@ module Cfdi40
     def formated_value(accessor)
       case self.class.formats[accessor]
       when :t_Importe
-        public_send(accessor).to_f == 0.0 ? '0' : sprintf("%0.6f", public_send(accessor).to_f)
+        public_send(accessor).to_f == 0.0 ? "0" : format("%0.6f", public_send(accessor).to_f)
       when :t_ImporteMXN
-        public_send(accessor).to_f == 0.0 ? '0' : sprintf("%0.2f", public_send(accessor).to_f)
+        public_send(accessor).to_f == 0.0 ? "0" : format("%0.2f", public_send(accessor).to_f)
       else
         public_send(accessor)
       end

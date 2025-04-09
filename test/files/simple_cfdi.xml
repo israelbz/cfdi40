@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" Fecha="2025-04-08T20:33:08" Sello="ZR6e3dgBnzRNXHCgMczbZfNqPdVJ4Sc8lvs5eEq16RL76uT8gWb0CmbwOPDZ+rlcFIzguk4TzDfJUfvTN8e1vuMEgtKOYB81EIhoz9lHCu5h+ZSLBBjR8F+mTu0qL71IVxQlcx/0aBlUqRehFLLFmyNOS6amd3f1DbPq+QGZ1F55P1YuSHMVVZDeDmcTIXl4pgY4sIY2Fxs8Wc452myfVHgaXLmNGEVRmpik/JfDdTr2S6YFGQjqThXuH3MRMY2bkREOHjj2RfUQwr3/grA8GEXkOCXnaffUIfkcJxibGmS+KICLc24FhjQAhqJRNcQKKZU8FQQctbqNMM6hGPONQg==" NoCertificado="30001000000400002310" Certificado="MIIF0TCCA7mgAwIBAgIUMzAwMDEwMDAwMDA0MDAwMDIzMTAwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWRpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMTkwNTI4MjE1ODIwWhcNMjMwNTI3MjE1ODIwWjCBxjEdMBsGA1UEAxMUQUxCQSBYS0FSQUpBTSBNRU5ERVoxHTAbBgNVBCkTFEFMQkEgWEtBUkFKQU0gTUVOREVaMR0wGwYDVQQKExRBTEJBIFhLQVJBSkFNIE1FTkRFWjELMAkGA1UEBhMCTVgxJTAjBgkqhkiG9w0BCQEWFnBydWViYXNAcHJ1ZWJhcy5nb2IubXgxFjAUBgNVBC0TDVhBTUE2MjAyMTBEUTUxGzAZBgNVBAUTElhBTUE2MjAyMTBNU0xLTkwwNDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANGfJ+fJ4KdS1pWh0pdohRdrYuuIKyG+DbaTA0Yo7Jt4QSNwL2oxusSZkcildYtO+vK5HE8eW7fnBLF2IhOfGiv/7aISRLsTVhIBxySPWc6Euvsm6xsPhDMghev+6Mz4e1rKZKW36FBkj6vF+nZi61/qcmotjHCw3WuXzN+imPh6SHQ5UI5kkTaxRNnrpJ2Lny9c1p/iQkbZVluCYpOQoCfms5Ks3P4uJ01+s/CcAmtcyNDJqe9NFpY7e6xt1xxxcSruVRQG/XJQHRmrG8mb6cwhVXx96pAvFLRmlwCRllPJsPSL5GbE9SmysDwIkuYITpvW15pJ6awgAA3bNDyGqq8CAwEAAaNPME0wDAYDVR0TAQH/BAIwADALBgNVHQ8EBAMCA9gwEQYJYIZIAYb4QgEBBAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMEBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAgEAKGGcKmqRgO5G7zucnKJHlsBqkabtuTp+y1SnwcBopBiI2JTsylKhZqtNJ3gk8auNB4/b8ecdNyCeHxxGS6Ejg+A7vFwf4L8761EERma8i2BGBUHCiNYjQg2zkMUzZ7GM69oIU8zQ8/dNmd9pKzjUyGtsdxQNmPJp9f07GShQvOIN1Cs2woz5i0E1AFD4jCUbFKkosLt8xlGVKeFonlkrTvEVSyj9LmOTtIfNdHp64MUALx2ME2OaMcdTjs46HbHtGUrB0qMsCpZqEbWc0X73X2EqM6l0eoQ60r8tyHraLpBdPnD+RXjREpki/ah+1uoj3pP3rhoTILiFki465GsHdrfdVpPfo5JaQDEMCVnZ4dOSw6m3KlVGlIctXF/Yei52ZymDnVuIlqYWk7ZA7aewnciPOFEOcogZdSV7WSb+IY24MsrmwynGwll+gD2j9+97IePyIqc6ziAZf7xKJgBv/fjVqZWwfMQ6fXeusLJOYsk56GoUAPlcYTv6Mk5gptLv4wqklcq+O3ZXnsp8+QFuVCebs3Ht2FRlV/g219Klhun5uDRB7cNgg89B0UlMcaetbo60HBcZeAe7WmLV1VwhPIJwlUnWXO2ZFodov7FmxTERen8X4tGzoaFtfRjgID373DRN0Wf/OqN4ZIjfm+X5PTFU+AZjd3T24p62XB6O/x4=" SubTotal="163.79" Moneda="MXN" Total="190.00" TipoDeComprobante="I" Exportacion="01" LugarExpedicion="06000">
+  <cfdi:Emisor Rfc="XAMA620210DQ5" Nombre="ALBA XKARAJAM MENDEZ" RegimenFiscal="612"/>
+  <cfdi:Receptor Rfc="XAXX010101000" Nombre="JUAN PUEBLO BUENO" DomicilioFiscalReceptor="06000" RegimenFiscalReceptor="616" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Prueba de concepto" ValorUnitario="34.482759" Importe="34.480000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="34.48" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.52"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Otro concepto concepto" ValorUnitario="129.310345" Importe="129.310000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="129.31" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.69"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="26.21">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="163.79" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="26.21"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+</cfdi:Comprobante>

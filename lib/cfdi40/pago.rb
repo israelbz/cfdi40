@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Cfdi40
   class Pago < Node
-    define_attribute :monto, xml_attribute: 'Monto'
-    define_attribute :fecha_pago, xml_attribute: 'FechaPago'
-    define_attribute :forma_pago, xml_attribute: 'FormaDePagoP'
-    define_attribute :moneda, xml_attribute: 'MonedaP', readonly: true, default: 'MXN'
-    define_attribute :tipo_cambio, xml_attribute: 'TipoCambioP', readonly: true, default: '1'
+    define_attribute :monto, xml_attribute: "Monto"
+    define_attribute :fecha_pago, xml_attribute: "FechaPago"
+    define_attribute :forma_pago, xml_attribute: "FormaDePagoP"
+    define_attribute :moneda, xml_attribute: "MonedaP", readonly: true, default: "MXN"
+    define_attribute :tipo_cambio, xml_attribute: "TipoCambioP", readonly: true, default: "1"
 
     attr_accessor :uuid, :serie, :folio, :num_parcialidad, :importe_saldo_anterior, :objeto_impuestos
 
@@ -35,7 +37,7 @@ module Cfdi40
 
       @docto_relacionados =
         @children_nodes.select do |child|
-          child if child.class.name == 'Cfdi40::DoctoRelacionado'
+          child if child.instance_of?(::Cfdi40::DoctoRelacionado)
         end
     end
 
@@ -45,7 +47,7 @@ module Cfdi40
       summary = {}
       docto_relacionados.each do |docto|
         docto.traslados_summary.each do |key, data|
-          summary[key] ||= {base: 0, importe: 0}
+          summary[key] ||= { base: 0, importe: 0 }
           summary[key][:base] += data[:base]
           summary[key][:importe] += data[:importe]
         end

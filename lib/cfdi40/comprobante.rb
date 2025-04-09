@@ -6,32 +6,31 @@ module Cfdi40
     define_namespace "xsi", "http://www.w3.org/2001/XMLSchema-instance"
     define_namespace "cfdi", "http://www.sat.gob.mx/cfd/4"
     define_attribute :schema_location,
-                     xml_attribute: 'xsi:schemaLocation',
+                     xml_attribute: "xsi:schemaLocation",
                      readonly: true,
                      default: "http://www.sat.gob.mx/cfd/4 " \
                               "http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd"
-    define_attribute :version, xml_attribute: 'Version', readonly: true, default: '4.0'
-    define_attribute :serie, xml_attribute: 'Serie'
-    define_attribute :folio, xml_attribute: 'Folio'
-    define_attribute :fecha, xml_attribute: 'Fecha'
-    define_attribute :sello, xml_attribute: 'Sello', readonly: true
-    define_attribute :forma_pago, xml_attribute: 'FormaPago'
-    define_attribute :no_certificado, xml_attribute: 'NoCertificado'
-    define_attribute :certificado, xml_attribute: 'Certificado'
-    define_attribute :condiciones_de_pago, xml_attribute: 'CondicionesDePago'
-    define_attribute :subtotal, xml_attribute: 'SubTotal', format: :t_ImporteMXN
-    define_attribute :descuento, xml_attribute: 'Descuento', format: :t_ImporteMXN
-    define_attribute :moneda, xml_attribute: 'Moneda', default: 'MXN'
-    define_attribute :tipo_cambio, xml_attribute: 'TipoCambio'
-    define_attribute :total, xml_attribute: 'Total', format: :t_ImporteMXN
-    define_attribute :tipo_de_comprobante, xml_attribute: 'TipoDeComprobante', default: 'I'
-    define_attribute :exportacion, xml_attribute: 'Exportacion', default: '01'
-    define_attribute :metodo_pago, xml_attribute: 'MetodoPago'
-    define_attribute :lugar_expedicion, xml_attribute: 'LugarExpedicion'
-    define_attribute :confirmacion, xml_attribute: 'Confirmacion'
+    define_attribute :version, xml_attribute: "Version", readonly: true, default: "4.0"
+    define_attribute :serie, xml_attribute: "Serie"
+    define_attribute :folio, xml_attribute: "Folio"
+    define_attribute :fecha, xml_attribute: "Fecha"
+    define_attribute :sello, xml_attribute: "Sello", readonly: true
+    define_attribute :forma_pago, xml_attribute: "FormaPago"
+    define_attribute :no_certificado, xml_attribute: "NoCertificado"
+    define_attribute :certificado, xml_attribute: "Certificado"
+    define_attribute :condiciones_de_pago, xml_attribute: "CondicionesDePago"
+    define_attribute :subtotal, xml_attribute: "SubTotal", format: :t_ImporteMXN
+    define_attribute :descuento, xml_attribute: "Descuento", format: :t_ImporteMXN
+    define_attribute :moneda, xml_attribute: "Moneda", default: "MXN"
+    define_attribute :tipo_cambio, xml_attribute: "TipoCambio"
+    define_attribute :total, xml_attribute: "Total", format: :t_ImporteMXN
+    define_attribute :tipo_de_comprobante, xml_attribute: "TipoDeComprobante", default: "I"
+    define_attribute :exportacion, xml_attribute: "Exportacion", default: "01"
+    define_attribute :metodo_pago, xml_attribute: "MetodoPago"
+    define_attribute :lugar_expedicion, xml_attribute: "LugarExpedicion"
+    define_attribute :confirmacion, xml_attribute: "Confirmacion"
 
-    attr_reader :emisor, :receptor, :x509_cert, :conceptos, :private_key
-    attr_reader :errors
+    attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors
     attr_writer :key_data, :key_pass
 
     def initialize
@@ -70,14 +69,27 @@ module Cfdi40
       @key_data = File.read(path)
     end
 
+    # Load from attribute 'Certificado' when the CFDi is
+    # loaded from a string
+    def load_cert
+      return if @sat_csd&.cert64
+
+      @sat_csd ||= SatCsd.new
+      @sat_csd.cert_der = OpenSSL::X509::Certificate.new(Base64.decode64(certificado))
+      true
+    rescue StandardError
+      # puts "Waring; Unable to load certificate from XML string"
+      false
+    end
+
     def sign
       @sat_csd ||= SatCsd.new
       load_private_key if @sat_csd.private_key.nil?
       return unless @sat_csd.private_key
 
-      raise Error, 'Key and certificate not match' unless @sat_csd.valid_pair?
+      raise Error, "Key and certificate not match" unless @sat_csd.valid_pair?
 
-      digest = @sat_csd.private_key.sign(OpenSSL::Digest.new('SHA256'), original_content)
+      digest = @sat_csd.private_key.sign(OpenSSL::Digest.new("SHA256"), original_content)
       @sello = Base64.strict_encode64 digest
       @docxml = nil
     end
@@ -90,7 +102,7 @@ module Cfdi40
     # +descripcion+:: Product or service description
     #
     # ### Price and Taxes attributes
-    # 
+    #
     # +tasa_iva+:: Decimal between 0 and 1. Nil means exempt. Default value is 0.16
     # +tasa_ieps+:: Decimal between 0 and 1. Nil means exempt. Default value is null
     # +precio_bruto+:: Price before apply taxes or gross price.
@@ -106,7 +118,7 @@ module Cfdi40
     # +descuento+:: PENDING
     #
     # ## Special attributes
-    # 
+    #
     # ### IEDU attributes
     #
     # IEDU node (path: cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto/cfdi:ComplementoConcepto/iedu:instEducativas) is
@@ -119,22 +131,42 @@ module Cfdi40
     # +iedu_rfc_pago+::
     #
     def add_concepto(attributes = {})
-      raise Error, 'CFDi tipo pago no acepta conceptos' if tipo_de_comprobante == 'P'
+      raise Error, "CFDi tipo pago no acepta conceptos" if tipo_de_comprobante == "P"
 
       concepto = Concepto.new
       concepto.parent_node = @conceptos
       attributes.each do |key, value|
         method_name = "#{key}=".to_sym
-        if concepto.respond_to?(method_name)
-          concepto.public_send(method_name, value)
-        else
-          raise Error, ":#{key} no se puede asignar al concepto"
-        end
+        raise Error, ":#{key} no se puede asignar al concepto" unless concepto.respond_to?(method_name)
+
+        concepto.public_send(method_name, value)
       end
       concepto.calculate!
       @conceptos.children_nodes << concepto
       calculate!
       concepto
+    end
+
+    # Load node 'Concepto' from a Nokogiri::XML::Element
+    def load_concepto(ng_node)
+      concepto = Concepto.new
+      concepto.parent_node = @conceptos
+      concepto.load_from_ng_node(ng_node)
+      @conceptos.children_nodes << concepto
+      concepto
+    end
+
+    # Load node cfdi:Comprobante/cfdi:Impuestos
+    #
+    # Normally this node is calculated but must be read from the
+    # XML when a CFDi is loaded
+    def load_impuestos(ng_node)
+      impuestos.load_from_ng_node(ng_node)
+      ng_iva_node = ng_node.xpath("cfdi:Traslados/cfdi:Traslado[@Impuesto='002']").first
+      return true if ng_iva_node.nil?
+
+      impuestos.traslado_iva.load_from_ng_node(ng_iva_node)
+      true
     end
 
     # TODO: Doc params add_pago
@@ -148,7 +180,7 @@ module Cfdi40
     # importe_saldo_anterior
     # objeto_impuestos
     def add_pago(attributes = {})
-      raise Error, "CFDi debe ser tipo 'P'" unless tipo_de_comprobante == 'P'
+      raise Error, "CFDi debe ser tipo 'P'" unless tipo_de_comprobante == "P"
 
       add_node_concepto_actividad_pago
       complemento.add_pago(attributes)
@@ -176,28 +208,41 @@ module Cfdi40
     end
 
     def original_content
-      xslt_path = File.join(File.dirname(__FILE__), '..', '..', 'lib/xslt/cadenaoriginal_local.xslt')
+      xslt_path = File.join(File.dirname(__FILE__), "..", "..", "lib/xslt/cadenaoriginal_local.xslt")
       xslt = Nokogiri::XSLT(File.open(xslt_path))
       transformed = xslt.transform(docxml)
       # The ampersand (&) char must be used in original content
       # even though the documentation indicates otherwise
-      transformed.children.to_s.gsub('&amp;', '&').strip
+      transformed.children.to_s.gsub("&amp;", "&").strip
+    end
+
+    # Shortcut to attribute TotalImpuestosTrasladados of impuestos node
+    def total_impuestos_trasladados
+      return nil unless impuestos_node
+
+      impuestos_node.total_impuestos_trasladados
+    end
+
+    def total_iva_node
+      return nil unless impuestos_node
+
+      impuestos_node.traslado_iva
     end
 
     private
 
     def add_node_concepto_actividad_pago
       return if defined?(@concepto_actividad)
-      
-      @receptor.uso_cfdi = 'CP01'
+
+      @receptor.uso_cfdi = "CP01"
       @concepto_actividad = Concepto.new
-      @concepto_actividad.clave_prod_serv = '84111506'
+      @concepto_actividad.clave_prod_serv = "84111506"
       @concepto_actividad.cantidad = 1
-      @concepto_actividad.clave_unidad = 'ACT'
-      @concepto_actividad.descripcion = 'Pago'
+      @concepto_actividad.clave_unidad = "ACT"
+      @concepto_actividad.descripcion = "Pago"
       @concepto_actividad.precio_bruto = 0
       @concepto_actividad.tasa_iva = nil
-      @concepto_actividad.objeto_impuestos = '01'
+      @concepto_actividad.objeto_impuestos = "01"
       @concepto_actividad.calculate!
       @conceptos.add_child_node @concepto_actividad
       calculate!
@@ -230,7 +275,6 @@ module Cfdi40
       impuestos.total_impuestos_trasladados = 0
       traslados.children_nodes = []
       traslados_summary.each do |key, value|
-        #TODO: Sumar los impuestos y agregarlos a los nodos globales de traslados
         traslado = Traslado.new
         traslado.parent_node = impuestos
         traslado.impuesto, traslado.tasa_o_cuota, traslado.tipo_factor = key
@@ -259,9 +303,7 @@ module Cfdi40
       summary
     end
 
-    # TODO: Este método tiene que ser 'impuestos'
-    #       si nos atenemos a que los que acaban con _node buscan en los hijos
-    #       y los que no terminan con _node crean el nodo
+    # Returns a Cfdi40::Node for 'Impuestos'
     def impuestos
       return @impuestos if defined?(@impuestos)
 
@@ -272,7 +314,7 @@ module Cfdi40
     end
 
     def impuestos_node
-      children_nodes.select { |n| n.is_a?(Impuestos)}.first
+      children_nodes.select { |n| n.is_a?(Impuestos) }.first
     end
 
     def traslados
@@ -288,7 +330,7 @@ module Cfdi40
 
     def load_private_key
       return unless defined?(@key_data)
-      
+
       @sat_csd ||= SatCsd.new
       @sat_csd.set_private_key(@key_data, (defined?(@key_pass) ? @key_pass : nil))
     end
