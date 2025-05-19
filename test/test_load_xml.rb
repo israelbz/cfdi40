@@ -120,6 +120,21 @@ class TestLoad < Minitest::Test
     end
   end
 
+  def test_add_concepto_to_loaded_cfdi
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    cfdi.add_concepto(
+      clave_prod_serv: "81111500",
+      clave_unidad: "E48",
+      descripcion: "Tercer concepto",
+      precio_neto: 40
+    )
+    assert_equal 3, cfdi.conceptos.children_nodes.count
+    xml_doc = REXML::Document.new(cfdi.to_xml)
+    assert_equal 3, REXML::XPath.match(xml_doc, "//cfdi:Concepto").size
+
+
+  end
 
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0
   # TODO: Carga timbrados como solo lectura

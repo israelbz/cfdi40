@@ -264,8 +264,8 @@ module Cfdi40
     end
 
     def calculate!
-      @subtotal = @conceptos.children_nodes.map(&:importe).sum
-      @total = @conceptos.children_nodes.map(&:importe_neto).sum
+      @subtotal = @conceptos.children_nodes.map(&:importe).map(&:to_f).sum
+      @total = @conceptos.children_nodes.map(&:importe_neto).map(&:to_f).sum
       add_traslados_summary_node
     end
 
@@ -297,8 +297,8 @@ module Cfdi40
       concepto_nodes.map(&:traslado_nodes).flatten.each do |traslado|
         key = [traslado.impuesto, traslado.tasa_o_cuota, traslado.tipo_factor]
         summary[key] ||= { base: 0, importe: 0 }
-        summary[key][:base] += traslado.base
-        summary[key][:importe] += traslado.importe
+        summary[key][:base] += traslado.base.to_f
+        summary[key][:importe] += traslado.importe.to_f
       end
       summary
     end
