@@ -30,6 +30,20 @@ module Cfdi40
       super
     end
 
+    # Ver Comprobante#add_concepto
+    def update(attributes = {})
+      attributes.each do |key, value|
+        method_name = "#{key}=".to_sym
+        raise Error, ":#{key} no se puede asignar al concepto" unless respond_to?(method_name)
+
+        public_send(method_name, value)
+      end
+
+      calculate!
+      parent_node.parent_node.calculate!
+      true
+    end
+
     # Calculate taxes, amounts from gross price
     # or net price
     def calculate!
@@ -90,7 +104,7 @@ module Cfdi40
     end
 
     def calculate_taxes
-      @base_ieps = (@precio_bruto * cantidad).round(2)
+      @base_ieps = (@precio_bruto * cantidad.to_f).round(2)
       @ieps = (@base_ieps * tasa_ieps.to_f).round(2)
       @base_iva = (@base_ieps + @ieps).round(2)
       @iva = (@base_iva * tasa_iva.to_f).round(2)

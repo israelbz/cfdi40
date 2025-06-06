@@ -108,6 +108,26 @@ Hasta ahora:
 Una vez cargado el xml se pueden leer los atributos
 y/o hacer modificaciones
 
+# Editar el n-ésimo concepto
+
+En el siguiente ejemplo la variable `cfdi` es un CFDi creado o cargado
+desde un xml y se desea cambiar el tercer
+cantidad, precio y clave SAT de producto
+
+    concepto = cfdi.concepto_nodes[2]
+    concepto.update(
+      cantidad: 2,
+      precio_neto: 1_640,
+      descripcion: "Tablero de control de proyectos",
+      clave_prod_serv: "44111901"
+    )
+
+# Eliminar el n-esimo concepto
+
+Para eliminar el segundo concepto de un `cfdi` dado:
+
+    cfdi.conceptos.delete_at(1)
+
 # Lo que sigue
 
 * Nodo de Traslados cuando hay tasa de IEPS
@@ -115,6 +135,13 @@ y/o hacer modificaciones
 * CFDI de pagos con varios pagos y varios documentos en cada pago
 
 # Cambios
+
+# 0.1.0
+* Elimina conceptos
+* Edición de conceptos
+
+# 0.0.9
+* FIX cálculos en un xml cargado
 
 # 0.0.8
 * Carga básica de un CFDI desde XML.

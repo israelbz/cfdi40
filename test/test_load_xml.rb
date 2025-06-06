@@ -129,11 +129,11 @@ class TestLoad < Minitest::Test
       descripcion: "Tercer concepto",
       precio_neto: 40
     )
+
     assert_equal 3, cfdi.conceptos.children_nodes.count
     xml_doc = REXML::Document.new(cfdi.to_xml)
+
     assert_equal 3, REXML::XPath.match(xml_doc, "//cfdi:Concepto").size
-
-
   end
 
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0

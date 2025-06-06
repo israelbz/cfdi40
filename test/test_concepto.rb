@@ -4,6 +4,8 @@ require "test_helper"
 require "rexml/document"
 
 class TestConcepto < Minitest::Test
+  include Cfdi40Helper
+
   def test_that_calculate_tax_breakdown
     concepto = Cfdi40::Concepto.new
     concepto.cantidad = 5
@@ -86,5 +88,17 @@ class TestConcepto < Minitest::Test
     assert_in_epsilon 100, concepto.base_iva, 0.000001
     assert_in_epsilon 0, concepto.iva, 0.000001
     assert_equal 100, concepto.importe_neto
+  end
+
+  def test_that_can_be_updated
+    cfdi = simple_cfdi
+    concepto = cfdi.concepto_nodes[0]
+    concepto.update(cantidad: 2, precio_neto: 60, descripcion: "Nueva descripción")
+    xml = REXML::Document.new(cfdi.to_xml)
+
+    assert_equal "120.00", xml.root["Total"]
+    concepto_node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto")
+
+    assert_equal "2", concepto_node["Cantidad"]
   end
 end

@@ -229,6 +229,17 @@ module Cfdi40
       impuestos_node.traslado_iva
     end
 
+    def calculate!
+      @docxml = nil
+      @subtotal = @conceptos.children_nodes.map(&:importe).map(&:to_f).sum
+      @total = @conceptos.children_nodes.map(&:importe_neto).map(&:to_f).sum
+      add_traslados_summary_node
+    end
+
+    def concepto_nodes
+      @conceptos.children_nodes
+    end
+
     private
 
     def add_node_concepto_actividad_pago
@@ -263,12 +274,6 @@ module Cfdi40
       create_xml_node
     end
 
-    def calculate!
-      @subtotal = @conceptos.children_nodes.map(&:importe).map(&:to_f).sum
-      @total = @conceptos.children_nodes.map(&:importe_neto).map(&:to_f).sum
-      add_traslados_summary_node
-    end
-
     def add_traslados_summary_node
       return if traslados_summary.empty?
 
@@ -283,10 +288,6 @@ module Cfdi40
         traslados.children_nodes << traslado
         impuestos.total_impuestos_trasladados += value[:importe]
       end
-    end
-
-    def concepto_nodes
-      @conceptos.children_nodes
     end
 
     # Returns a hash with a summary.
