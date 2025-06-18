@@ -3,17 +3,17 @@
   <cfdi:Emisor Rfc="XAMA620210DQ5" Nombre="ALBA XKARAJAM MENDEZ" RegimenFiscal="612"/>
   <cfdi:Receptor Rfc="XAXX010101000" Nombre="JUAN PUEBLO BUENO" DomicilioFiscalReceptor="06000" RegimenFiscalReceptor="616" UsoCFDI="G03"/>
   <cfdi:Conceptos>
-    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Prueba de concepto" ValorUnitario="34.482759" Importe="34.480000" ObjetoImp="02">
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Prueba de concepto" ValorUnitario="34.482759" Importe="34.482759" ObjetoImp="02">
       <cfdi:Impuestos>
         <cfdi:Traslados>
-          <cfdi:Traslado Base="34.48" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.52"/>
+          <cfdi:Traslado Base="34.482759" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.52"/>
         </cfdi:Traslados>
       </cfdi:Impuestos>
     </cfdi:Concepto>
-    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Otro concepto concepto" ValorUnitario="129.310345" Importe="129.310000" ObjetoImp="02">
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Otro concepto concepto" ValorUnitario="129.310345" Importe="129.310345" ObjetoImp="02">
       <cfdi:Impuestos>
         <cfdi:Traslados>
-          <cfdi:Traslado Base="129.31" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.69"/>
+          <cfdi:Traslado Base="129.310345" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.69"/>
         </cfdi:Traslados>
       </cfdi:Impuestos>
     </cfdi:Concepto>

@@ -30,7 +30,7 @@ class TestLoad < Minitest::Test
     xml = REXML::Document.new(xml_string)
     cfdi = Cfdi40.open(xml_string)
 
-    assert_equal 2, cfdi.conceptos.children_nodes.count
+    assert_equal 2, cfdi.concepto_nodes.count
     n = 0
     REXML::XPath.each(xml, "cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto") do |node|
       concepto = cfdi.conceptos.children_nodes[n]
@@ -38,9 +38,11 @@ class TestLoad < Minitest::Test
         if node[attribute].nil?
           assert_nil concepto.public_send(method)
         else
-          assert_equal node[attribute], concepto.public_send(method)
+          #assert_equal node[attribute], concepto.public_send(method)
+          assert_equal node[attribute], concepto.formated_value(method)
         end
       end
+      assert !concepto.importe_neto.nil?, "importe_neto should exist"
       n += 1
     end
   end
@@ -123,7 +125,9 @@ class TestLoad < Minitest::Test
   def test_add_concepto_to_loaded_cfdi
     xml_string = File.read("test/files/simple_cfdi.xml")
     cfdi = Cfdi40.open(xml_string)
+    total_xml = cfdi.total
     cfdi.add_concepto(
+      cantidad: 2,
       clave_prod_serv: "81111500",
       clave_unidad: "E48",
       descripcion: "Tercer concepto",
@@ -134,6 +138,7 @@ class TestLoad < Minitest::Test
     xml_doc = REXML::Document.new(cfdi.to_xml)
 
     assert_equal 3, REXML::XPath.match(xml_doc, "//cfdi:Concepto").size
+    assert_equal total_xml.to_f + 80, cfdi.total
   end
 
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0

@@ -82,6 +82,7 @@ module Cfdi40
 
     def load_traslado_iva(ng_node)
       traslado_iva_node.load_from_ng_node(ng_node)
+      calculate_from_gross_price
     end
 
     private
@@ -99,15 +100,15 @@ module Cfdi40
       calculate_taxes
       # May be can not be rounded with 2 decimals.
       # Example gross_price = 1.99512
-      @precio_neto = (@importe_neto / cantidad).round(6)
+      @precio_neto = (@importe_neto / cantidad.to_f).round(6)
       update_xml_attributes
     end
 
     def calculate_taxes
-      @base_ieps = (@precio_bruto * cantidad.to_f).round(2)
-      @ieps = (@base_ieps * tasa_ieps.to_f).round(2)
-      @base_iva = (@base_ieps + @ieps).round(2)
-      @iva = (@base_iva * tasa_iva.to_f).round(2)
+      @base_ieps = (@precio_bruto * cantidad.to_f).round(6)
+      @ieps = (@base_ieps * tasa_ieps.to_f).round(4)
+      @base_iva = (@base_ieps + @ieps).round(6)
+      @iva = (@base_iva * tasa_iva.to_f).round(4)
       @importe_bruto = @base_ieps
       @importe_neto = (@base_iva + @iva).round(2)
     end

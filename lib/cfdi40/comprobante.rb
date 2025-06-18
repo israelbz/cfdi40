@@ -152,6 +152,7 @@ module Cfdi40
       concepto = Concepto.new
       concepto.parent_node = @conceptos
       concepto.load_from_ng_node(ng_node)
+      concepto.precio_bruto = concepto.valor_unitario.to_f
       @conceptos.children_nodes << concepto
       concepto
     end
