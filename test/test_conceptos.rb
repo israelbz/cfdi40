@@ -22,4 +22,14 @@ class TestCfdi40 < Minitest::Test
     assert_equal 2, REXML::XPath.match(xml, node_conceptos_path).size
     assert_equal "140.00", xml.root["Total"]
   end
+
+  def test_that_update_total_when_delete_loaded_concepto
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    assert_equal 190.00, cfdi.total.to_f
+    cfdi.conceptos.delete_at(0)
+    assert_equal 150.00, cfdi.total.to_f
+    cfdi.conceptos.delete_at(0)
+    assert_equal 0, cfdi.total.to_f
+  end
 end
