@@ -92,6 +92,7 @@ class TestLoad < Minitest::Test
         assert_equal total_iva_node[attribute], cfdi.total_iva_node.public_send(method)
       end
     end
+    assert_equal 26.21, cfdi.total_iva
   end
 
   def test_load_emisor

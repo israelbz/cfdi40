@@ -177,6 +177,12 @@ class TestCfdi40 < Minitest::Test
     assert_empty cfdi.errors
   end
 
+  def test_accessor_for_total_iva
+    cfdi = simple_cfdi_with_key_cert_path
+    cfdi.add_concepto(simple_concepto.merge(cantidad: 1, descripcion: "Otro", precio_neto: 116))
+    assert_equal 21.52, cfdi.total_iva.to_f
+  end
+
   def test_that_subtotal_and_total_has_two_decimals
     cfdi = simple_cfdi_with_key_cert_path
     xml = REXML::Document.new(cfdi.to_xml)

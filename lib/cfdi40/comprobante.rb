@@ -224,12 +224,6 @@ module Cfdi40
       impuestos_node.total_impuestos_trasladados
     end
 
-    def total_iva_node
-      return nil unless impuestos_node
-
-      impuestos_node.traslado_iva
-    end
-
     def calculate!
       @docxml = nil
       @subtotal = @conceptos.children_nodes.map(&:importe).map(&:to_f).sum
@@ -239,6 +233,19 @@ module Cfdi40
 
     def concepto_nodes
       @conceptos.children_nodes
+    end
+
+    def total_iva_node
+      # TODO: Puede haber más de un nodo, cuando hay varias tasas de iva
+      return nil unless impuestos_node
+
+      impuestos_node.traslado_iva
+    end
+
+    def total_iva
+      return 0 unless traslados
+
+      traslados.traslados_iva.map(&:importe).map(&:to_f).sum.round(2)
     end
 
     private
@@ -323,11 +330,6 @@ module Cfdi40
       return nil if impuestos_node.nil?
 
       impuestos_node.traslados
-    end
-
-    # TODO: Eliminar
-    def traslado_iva_node
-      impuestos_node.traslado_iva
     end
 
     def load_private_key

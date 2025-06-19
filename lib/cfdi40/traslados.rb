@@ -16,5 +16,9 @@ module Cfdi40
     def traslado_nodes
       children_nodes
     end
+
+    def traslados_iva
+      children_nodes.select { |node| node.impuesto == '002' }
+    end
   end
 end
