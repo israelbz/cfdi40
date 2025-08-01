@@ -70,7 +70,14 @@ module Cfdi40
     def subject_data
       return unless x509_cert
 
-      x509_cert.subject.to_a
+      # The #to_a method doesn't convert to_utf8
+      # https://ruby-doc.org/core-3.1.2/OpenSSL/X509/Name.html
+      #
+      # A simpliest
+      #     x509_cert.subject.to_a
+      # could't be used so, we need first convert to UTF-8
+
+      x509_cert.subject.to_utf8.split(',').map { |str| str.split '='  }
     end
 
     def key_to_pem(key_der)

@@ -17,6 +17,13 @@ class TestSatCsd < Minitest::Test
     assert_equal "ALBA XKARAJAM MENDEZ", sat_csd.name
   end
 
+  def test_that_extract_name_with_non_ascii_chars
+    sat_csd = Cfdi40::SatCsd.new
+    sat_csd.cert_path = "test/files/csd3_non_ascii.cer"
+
+    assert_equal "LUIS IAN ÑUZCO", sat_csd.name
+  end
+
   def test_that_extract_number_from_certificate
     sat_csd = Cfdi40::SatCsd.new
     sat_csd.cert_path = "test/files/cert1.cer"
