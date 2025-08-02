@@ -76,7 +76,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "MXN", node["MonedaP"]
     assert_equal "01", node["FormaDePagoP"]
     assert_equal "2023-04-01T12:20:34", node["FechaPago"]
-    assert_equal "200.17", node["Monto"]
+    assert_equal "200.170000", node["Monto"]
     assert_equal "1", node["TipoCambioP"]
   end
 
@@ -91,7 +91,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "A", node["Serie"]
     assert_equal "12345", node["Folio"]
     assert_equal "MXN", node["MonedaDR"]
-    assert_equal "1", node["EquivalenciaDR"]
+    assert_equal "1.000000", node["EquivalenciaDR"]
     assert_equal "2", node["NumParcialidad"]
     assert_equal "845.67", node["ImpSaldoAnt"]
     assert_equal "200.17", node["ImpPagado"]
@@ -184,7 +184,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "0", node["ValorUnitario"]
     assert_equal "01", node["ObjetoImp"]
     assert_equal "Pago", node["Descripcion"]
-    assert_equal "1", node["Cantidad"]
+    assert_equal "1.000000", node["Cantidad"]
     assert_equal "0", node["Importe"]
     assert_equal "ACT", node["ClaveUnidad"]
     assert_equal "84111506", node["ClaveProdServ"]

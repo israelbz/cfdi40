@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" Fecha="2025-08-03T20:10:17" Sello="i0ipCYRqkk7AkiOtynGXKXuHv06n5oAcRhOYRmc8XeLIPL0rzKdmti6z1TFmHt0cT7jXFI1p3XIIod6hs63XRAozao6ZYHR6vxsySxq3voNQysDpc72loUdRcru3rKoa4GjsHDfmE0i/8mS/oLNg6dCRJHlI4ridWaBY97SEMbjC/0DyRFhbjUecAEFyiMJi/vIw1glhCKvHDxQVplPXnzCKcTCIxmc/w0xdB9O8RCrnNMdS0LZ0mhsteWA3nUAFCMpXHj7GwlBmh2w4r5H0BK0wQeiDDE0NOyl63YuHyrYYOtZ/9v3duvTM7Kldltm1OfIUooFa1PEkVXCQORhMmQ==" NoCertificado="30001000000400002336" Certificado="MIIFjjCCA3agAwIBAgIUMzAwMDEwMDAwMDA0MDAwMDIzMzYwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWRpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMTkwNTI5MTk1MjQyWhcNMjMwNTI5MTk1MjQyWjCBtTEeMBwGA1UEAxMVQkVSRU5JQ0UgWElNTyBRVUVaQURBMR4wHAYDVQQpExVCRVJFTklDRSBYSU1PIFFVRVpBREExHjAcBgNVBAoTFUJFUkVOSUNFIFhJTU8gUVVFWkFEQTEWMBQGA1UELRMNWElRQjg5MTExNlFFNDEbMBkGA1UEBRMSWElRQjg5MTExNk1HUk1aUjA1MR4wHAYDVQQLExVCRVJFTklDRSBYSU1PIFFVRVpBREEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCp6FMIaf6NrmG278bVeJIlOEx3c7FepPkVLLbic9z28ws49OpajLa0xlmIb17lcPZWfm8VGRbRWHa6PY8KxbuBtN+k2/KjpVztGh3PPyHIVT6QoXJczzQaNMcuN3W+KoHGa4EvAqG8MchtTqhXX8U8Lds83pSRiPJKNCJ3x/CfnAK6LlxFi3NdIHYVRqNE/R4TPe38VbGVR/9wLsgGQhrhhQwWXnUcPBF5WB/myQEJJq/esuKWYlLugzJfZjklUs2ThrjSZM6YvBujmFqCz4t3fJU0lYEDNI8rT1PHy9LFdiXNeUZQf5c+1TfTdhdGQmYUWLdkyRSdF3tIkPb2+exHAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBCwUAA4ICAQAqYMNNHiDbDCrIGsNKpeT24HZVJ2gIJ8PuB/DdKxAFBANTp6KRQFb+7FoyVhP29H55DRre4Cyfrr0Bi5ZwGEaAv+D6/41N9M4/2TClgyZp4ppXPYZy0+AVM3ySsFwUfdancTeZjy0X9ETFcjj190x5W6FA63FaaX+YpuCgougKhi/cXT6HiFvi+STeMdsygJNyCuVXgC3hGnwYnBDheLp2HFuVI0ugF/zRnPaMFcRB1IL8Zi1wtg451E0YeGLm2x+WhWSZdzJoz+0NK+bC3+13JVUjj7wypfXMVwC5/x4H50pFbNnVp+jcgKvP9k+DQ2Qibe6kSrmKF57sndO/PtnK2g8ukKJmShDTfZJlSSf+xBZwbJ6yqYvmGuxtSd2kr4UFJ4jjFS7WeqCZ0TyVZ+sdQ6SJk2ed64YgSHsPHqmIPIn9acrLt/B+ycEACIC8Wb1AbvztKnb0dxCuuU2XfszSG08XHs2RA7hVmbe1d58lhIX7b32YUH5VmgOsSezUF4ji46Blci86l4nb9VbxAmrXAQtRWEiBAK+TR3k33MhCom/Dub7Xo16HJuJkEjleFdhmwCDpqs9/XFcfGybvKXTkd1OjaMkJ1XKzsNGQfKpXsFVl+O4vGsFMNmyU8c2YbPK+D2XwMJSeHjYFs6Oyc/TljED+/577EBElcF5Diu1vTw==" SubTotal="724.14" Moneda="MXN" Total="840.00" TipoDeComprobante="I" Exportacion="01" LugarExpedicion="06000">
+  <cfdi:Emisor Rfc="XIQB891116QE4" Nombre="BERENICE XIMO QUEZADA"/>
+  <cfdi:Receptor Rfc="XAXX010101000" DomicilioFiscalReceptor="06000" RegimenFiscalReceptor="616" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" ClaveUnidad="E48" Descripcion="Prueba CFDI firma. Primer concepto" ValorUnitario="103.448276" Importe="103.448276" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="103.448276" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.551724"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="81111500" Cantidad="2" ClaveUnidad="E48" Descripcion="Prueba CFDI firma. Segundo concepto" ValorUnitario="310.344828" Importe="620.689655" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="620.689655" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="99.310345"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="115.862069">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="724.137931" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="115.862069"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+</cfdi:Comprobante>

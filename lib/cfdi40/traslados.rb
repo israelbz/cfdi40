@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# /cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados
 module Cfdi40
   class Traslados < Node
     def traslado_iva

@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 module Cfdi40
+  # Main class for build CFDi.
+  #
+  # Keeps definitions (names, accessors and formats) and
+  # relations (parent & children) between nodes
   class Node
     # Nokigiri XML Document for the xml_node
     attr_accessor :xml_document, :xml_parent, :children_nodes, :parent_node
     attr_writer :element_name
+    attr_reader :readonly
 
     def initialize
       self.class.verify_class_variables
+      @readonly = readonly
       @children_nodes = []
       set_defaults
     end
@@ -29,16 +35,78 @@ module Cfdi40
 
     def self.define_attribute(accessor, xml_attribute:, default: nil, format: nil, readonly: false)
       verify_class_variables
-      if readonly
-        attr_reader accessor.to_sym
-      else
-        attr_accessor accessor.to_sym
-      end
+      define_reader(accessor, format)
+      define_writer(accessor, readonly, format)
+
       @@attributes[name][accessor.to_sym] = xml_attribute
       @@default_values[name][accessor.to_sym] = default if default
       return unless format
 
-      @@formats[name][accessor.to_sym] = format
+      @@formats[name][accessor.to_sym] = format.to_sym
+    end
+
+    def self.define_reader(accessor, format)
+      case format.to_s
+      when 't_Importe', 'decimal'
+        define_method("#{accessor}".to_sym) do
+          value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : 0
+          value.to_f.round(6)
+        end
+      when 't_ImporteMXN'
+        define_method("#{accessor}".to_sym) do
+          value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : 0
+          value.to_f.round(2)
+        end
+      when 't_FechaH', 't_FechaHora'
+        define_method("#{accessor}".to_sym) do
+          value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : nil
+          return nil unless value.is_a?(Time)
+
+          value
+        end
+      else
+        define_method("#{accessor}".to_sym) do
+          value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : nil
+          return nil if value.nil?
+
+          value.to_s
+        end
+      end
+    end
+
+    def self.define_writer(accessor, readonly_attribute, format)
+      if readonly_attribute
+        define_method "#{accessor}=".to_sym do |value|
+          raise Cfdi40::Error, "attribute '#{accessor}' can not be modified"
+        end
+      else
+        case format.to_s
+        when 't_FechaH', 't_FechaHora'
+          define_method "#{accessor}=".to_sym do |value|
+            raise Cfdi40::Error, "CFDI is read only" if self.readonly
+
+            clean_cached_xml
+            if value.nil? || value.is_a?(Time)
+              instance_variable_set("@#{accessor}".to_sym, value)
+              return
+            end
+
+            begin
+              parsed_time = Time.strptime(value.to_s, "%Y-%m-%dT%H:%M:%S")
+              instance_variable_set("@#{accessor}".to_sym, parsed_time)
+            rescue
+              raise Cfdi40::Error, "#{value} must have format 'yyyy-mm-ddTHH:MM:SS'"
+            end
+          end
+        else
+          define_method "#{accessor}=".to_sym do |value|
+            raise Cfdi40::Error, "CFDI loaded in read only mode" if self.readonly
+
+            clean_cached_xml
+            instance_variable_set("@#{accessor}".to_sym, value)
+          end
+        end
+      end
     end
 
     def self.define_namespace(namespace, value)
@@ -95,6 +163,14 @@ module Cfdi40
       @children_nodes << child_node
     end
 
+    # Locks for readonly this node and children
+    def lock
+      @readonly = true
+      @children_nodes.each(&:lock)
+
+      true
+    end
+
     def current_namespace
       return unless self.class.respond_to?(:namespaces)
 
@@ -116,8 +192,6 @@ module Cfdi40
     end
 
     def create_xml_node
-      # TODO: Quitar la siguiente linea (set_defaults) si funciona poniendo los defaults en initialize
-      # set_defaults
       before_add if respond_to?(:before_add, true)
       xml_node = xml_document.create_element(expanded_element_name)
       add_namespaces_to(xml_node)
@@ -145,12 +219,14 @@ module Cfdi40
       end
     end
 
+    # Add defined attributes. Skip unused attributes
     def add_attributes_to(node)
       self.class.attributes.each do |object_accessor, xml_attribute|
         next unless respond_to?(object_accessor)
-        next if public_send(object_accessor).nil?
+        next unless instance_variable_defined?("@#{object_accessor}".to_sym)
+        next if instance_variable_get("@#{object_accessor}".to_sym).nil?
 
-        node[xml_attribute] = formated_value(object_accessor)
+        node[xml_attribute] = formatted_value(object_accessor)
       end
     end
 
@@ -162,15 +238,28 @@ module Cfdi40
       end
     end
 
-    def formated_value(accessor)
+    def formatted_value(accessor)
       case self.class.formats[accessor]
-      when :t_Importe
+      when :t_Importe, :decimal
         public_send(accessor).to_f == 0.0 ? "0" : format("%0.6f", public_send(accessor).to_f)
       when :t_ImporteMXN
         public_send(accessor).to_f == 0.0 ? "0" : format("%0.2f", public_send(accessor).to_f)
+      when :t_FechaH, :t_FechaHora
+        value = public_send(accessor)
+        value.is_a?(Time) ? value.strftime("%Y-%m-%dT%H:%M:%S") : ''
       else
         public_send(accessor)
       end
     end
+
+    # Cleans a Nokogiri object and/or loaded_xml string if exists
+    def clean_cached_xml
+      @docxml = nil
+      @loaded_xml = nil
+
+      parent_node&.clean_cached_xml
+    end
+
+
   end
 end

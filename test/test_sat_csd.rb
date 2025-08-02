@@ -90,4 +90,10 @@ class TestSatCsd < Minitest::Test
 
     assert_equal "EKU9003173C9", sat_csd.rfc
   end
+
+  def test_that_accept_cert_base64_encoded
+    sat_csd = Cfdi40::SatCsd.new
+    sat_csd.cert64 = File.read("test/files/cert64.txt")
+    assert_instance_of OpenSSL::X509::Certificate, sat_csd.x509_cert
+  end
 end

@@ -4,10 +4,11 @@
 # from an XML (string)
 module Cfdi40
   class XmlLoader
-    attr_reader :cfdi, :xml_doc
+    attr_reader :cfdi, :xml_doc, :mode
 
-    def initialize(xml_string)
+    def initialize(xml_string, mode)
       @xml_doc = Nokogiri::XML(xml_string)
+      @mode = mode
       # TODO. validar versión del CFDI definido en xml_doc
       @cfdi = Cfdi40::Comprobante.new
       @cfdi.load_from_ng_node(xml_doc.root)
@@ -16,10 +17,19 @@ module Cfdi40
       load_receptor
       load_conceptos
       load_impuestos
+
+      @cfdi.lock if readonly?
+      @cfdi.loaded_xml = xml_string
       @cfdi
     end
 
     private
+
+    def readonly?
+      return true if mode == 'ro'
+
+      @xml_doc.root.attributes["Sello"].to_s != ''
+    end
 
     def load_conceptos
       n_concepto = 0

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-# /cfdi:Comprobante/cfdi:Impuestos
+# /cfdi:Comprobante/cfdi:Conceptos/cfdiConcepto/cfdi:Impuestos
 module Cfdi40
-  class Impuestos < Node
-    define_attribute :total_impuestos_retenidos, xml_attribute: "TotalImpuestosRetenidos", format: :t_Importe
-    define_attribute :total_impuestos_trasladados, xml_attribute: "TotalImpuestosTrasladados", format: :t_Importe
+  class ConceptoImpuestos < Node
+    define_element_name "Impuestos"
 
     def traslados
       return @traslados if defined?(@traslados)

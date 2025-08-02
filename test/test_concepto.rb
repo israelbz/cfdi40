@@ -99,6 +99,6 @@ class TestConcepto < Minitest::Test
     assert_equal "120.00", xml.root["Total"]
     concepto_node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto")
 
-    assert_equal "2", concepto_node["Cantidad"]
+    assert_equal "2.000000", concepto_node["Cantidad"]
   end
 end

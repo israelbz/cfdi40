@@ -9,7 +9,7 @@ module Cfdi40
   class Concepto < Node
     define_attribute :clave_prod_serv, xml_attribute: "ClaveProdServ"
     define_attribute :no_identificacion, xml_attribute: "NoIdentificacion"
-    define_attribute :cantidad, xml_attribute: "Cantidad", default: 1
+    define_attribute :cantidad, xml_attribute: "Cantidad", default: 1, format: :decimal
     define_attribute :clave_unidad, xml_attribute: "ClaveUnidad"
     define_attribute :unidad, xml_attribute: "Unidad"
     define_attribute :descripcion, xml_attribute: "Descripcion"
@@ -75,7 +75,7 @@ module Cfdi40
     end
 
     def traslado_iva_node
-      return nil unless impuestos_node.is_a?(Impuestos)
+      return nil unless impuestos_node.is_a?(ConceptoImpuestos)
 
       impuestos_node.traslado_iva
     end
@@ -140,10 +140,10 @@ module Cfdi40
       return @impuestos_node if defined?(@impuestos_node)
       return nil unless objeto_impuestos?
 
-      @impuestos_node = children_nodes.select { |child| child.is_a?(Impuestos) }.first
+      @impuestos_node = children_nodes.select { |child| child.is_a?(ConceptoImpuestos) }.first
       return if @impuestos_node
 
-      @impuestos_node = Impuestos.new
+      @impuestos_node = ConceptoImpuestos.new
       @impuestos_node.parent_node = self
       children_nodes << @impuestos_node
       @impuestos_node

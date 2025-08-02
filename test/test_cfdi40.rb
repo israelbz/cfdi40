@@ -122,8 +122,8 @@ class TestCfdi40 < Minitest::Test
     assert_equal "002", node["Impuesto"]
     assert_equal "Tasa", node["TipoFactor"]
     assert_equal "0.160000", node["TasaOCuota"]
-    assert_equal "103.45", node["Base"]
-    assert_equal "16.55", node["Importe"]
+    assert_equal "103.448277", node["Base"]
+    assert_equal "16.551700", node["Importe"]
   end
 
   def test_that_not_include_taxes_node
@@ -160,7 +160,7 @@ class TestCfdi40 < Minitest::Test
 
     assert_instance_of REXML::Element, node
     assert_in_epsilon 21.517241, node["TotalImpuestosTrasladados"].to_f, 0.005
-    assert_equal "21.52", node["TotalImpuestosTrasladados"]
+    assert_equal "21.517200", node["TotalImpuestosTrasladados"]
     node_path += "/cfdi:Traslados/cfdi:Traslado"
     node = REXML::XPath.first(xml, node_path)
 
@@ -169,9 +169,9 @@ class TestCfdi40 < Minitest::Test
     assert_equal "Tasa", node["TipoFactor"]
     assert_equal "0.160000", node["TasaOCuota"]
     assert_in_epsilon 134.482759, node["Base"].to_f, 0.005
-    assert_equal "134.48", node["Base"]
+    assert_equal "134.482759", node["Base"]
     assert_in_epsilon 21.517241, node["Importe"].to_f, 0.005
-    assert_equal "21.52", node["Importe"]
+    assert_equal "21.517200", node["Importe"]
     cfdi.valid?
 
     assert_empty cfdi.errors
@@ -212,27 +212,54 @@ class TestCfdi40 < Minitest::Test
     assert_empty cfdi.errors
   end
 
-  def test_total_impuestos_trasladados_has_two_decimals
+  def test_total_impuestos_trasladados_has_six_decimals
     cfdi = simple_cfdi_with_key_cert_path
     xml = REXML::Document.new(cfdi.to_xml)
     node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Impuestos")
 
-    assert_equal "5.52", node["TotalImpuestosTrasladados"]
+    assert_equal "5.517200", node["TotalImpuestosTrasladados"]
   end
 
-  def test_base_in_node_traslados_has_two_decimals
+  def test_base_in_node_traslados_has_six_decimals
     cfdi = simple_cfdi_with_key_cert_path
     xml = REXML::Document.new(cfdi.to_xml)
     node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados/cfdi:Traslado")
 
-    assert_equal "34.48", node["Base"]
+    assert_equal '34.482759', node["Base"]
   end
 
-  def test_importe_in_node_traslados_has_two_decimals
+  def test_importe_in_node_traslados_has_six_decimals
     cfdi = simple_cfdi_with_key_cert_path
     xml = REXML::Document.new(cfdi.to_xml)
     node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados/cfdi:Traslado")
 
-    assert_equal "5.52", node["Importe"]
+    assert_equal "5.517200", node["Importe"]
+  end
+
+  def test_change_to_readonly_when_signed
+    cfdi = simple_cfdi_with_key_cert_path
+    refute cfdi.readonly, 'cfdi should not be readonly'
+    cfdi.add_concepto(simple_concepto.merge(cantidad: 1, descripcion: "Otro", precio_neto: 116))
+    cfdi.to_xml
+    assert cfdi.readonly, 'cfdi shoud be readonly when signed'
+  end
+
+  def test_fecha_is_a_time_object
+    cfdi = cfdi_base
+    # Default value
+    assert_instance_of Time, cfdi.fecha
+
+    expected_time = Time.new(2025, 5, 21)
+    cfdi.fecha = expected_time
+    assert_equal expected_time, cfdi.fecha
+    xml = REXML::Document.new(cfdi.to_s)
+    assert_equal "2025-05-21T00:00:00", xml.root['Fecha']
+
+
+    expected_time = Time.new(2025, 1, 14, 16, 21, 13)
+    cfdi.fecha = "2025-01-14T16:21:13"
+    assert_equal expected_time, cfdi.fecha
+    xml = REXML::Document.new(cfdi.to_s)
+    assert_equal "2025-01-14T16:21:13", xml.root['Fecha']
   end
 end

@@ -33,7 +33,7 @@ module Cfdi40
     end
 
     def update_totales_traslado_iva16
-      key = ["002", "Tasa", "0.160000"]
+      key = ["002", "Tasa", 0.160000]
       return if traslados_summary[key].nil?
 
       totales_node.base_iva16 = traslados_summary[key][:base]
@@ -61,7 +61,7 @@ module Cfdi40
     def totales_node
       return @totales_node if defined?(@totales_node)
 
-      @totales_node = Totales.new
+      @totales_node = CpTotales.new
       add_child_node @totales_node
       @totales_node
     end

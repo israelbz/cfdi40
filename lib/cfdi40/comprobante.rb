@@ -2,6 +2,7 @@
 
 # Create and Read XML documents
 module Cfdi40
+  # root node
   class Comprobante < Node
     define_namespace "xsi", "http://www.w3.org/2001/XMLSchema-instance"
     define_namespace "cfdi", "http://www.sat.gob.mx/cfd/4"
@@ -13,7 +14,7 @@ module Cfdi40
     define_attribute :version, xml_attribute: "Version", readonly: true, default: "4.0"
     define_attribute :serie, xml_attribute: "Serie"
     define_attribute :folio, xml_attribute: "Folio"
-    define_attribute :fecha, xml_attribute: "Fecha"
+    define_attribute :fecha, xml_attribute: "Fecha", format: :t_FechaH
     define_attribute :sello, xml_attribute: "Sello", readonly: true
     define_attribute :forma_pago, xml_attribute: "FormaPago"
     define_attribute :no_certificado, xml_attribute: "NoCertificado"
@@ -32,6 +33,7 @@ module Cfdi40
 
     attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors
     attr_writer :key_data, :key_pass
+    attr_accessor :loaded_xml
 
     def initialize
       super
@@ -43,7 +45,7 @@ module Cfdi40
       @receptor = Receptor.new
       @receptor.parent_node = self
       @sat_csd = SatCsd.new
-      @fecha ||= Time.now.strftime("%Y-%m-%dT%H:%M:%S")
+      @fecha ||= Time.now
       @children_nodes = [@emisor, @receptor, @conceptos]
       set_defaults
     end
@@ -91,6 +93,7 @@ module Cfdi40
 
       digest = @sat_csd.private_key.sign(OpenSSL::Digest.new("SHA256"), original_content)
       @sello = Base64.strict_encode64 digest
+      lock
       @docxml = nil
     end
 
@@ -192,7 +195,9 @@ module Cfdi40
     end
 
     def to_xml
-      sign
+      return loaded_xml if !loaded_xml.nil? && signed?
+
+      sign unless signed?
       docxml.to_xml
     end
 
@@ -204,17 +209,25 @@ module Cfdi40
       @errors.empty?
     end
 
+    def valid_signature?
+      return false unless signed?
+
+      signature_validator = SignatureValidator.new(to_xml)
+      signature_validator.valid?
+    end
+
+    def signed?
+      !docxml.root.attributes["Sello"].nil?
+    end
+
     def cadena_original
       original_content
     end
 
     def original_content
-      xslt_path = File.join(File.dirname(__FILE__), "..", "..", "lib/xslt/cadenaoriginal_local.xslt")
-      xslt = Nokogiri::XSLT(File.open(xslt_path))
-      transformed = xslt.transform(docxml)
-      # The ampersand (&) char must be used in original content
-      # even though the documentation indicates otherwise
-      transformed.children.to_s.gsub("&amp;", "&").strip
+      xml_string = loaded_xml.nil? ? docxml.to_s : loaded_xml
+
+      Cfdi40::OriginalContent.generate(xml_string)
     end
 
     # Shortcut to attribute TotalImpuestosTrasladados of impuestos node
@@ -225,10 +238,13 @@ module Cfdi40
     end
 
     def calculate!
+      return false if readonly
+
       @docxml = nil
       @subtotal = @conceptos.children_nodes.map(&:importe).map(&:to_f).sum
       @total = @conceptos.children_nodes.map(&:importe_neto).map(&:to_f).sum
       add_traslados_summary_node
+      true
     end
 
     def concepto_nodes

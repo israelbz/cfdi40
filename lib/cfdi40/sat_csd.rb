@@ -13,6 +13,12 @@ module Cfdi40
       @x509_cert = OpenSSL::X509::Certificate.new(data)
     end
 
+    # Loads certficate encoded in Base64.
+    # Certs with Base64 encoding are used in CFDIs
+    def cert64=(data)
+      self.cert_der = Base64.decode64(data)
+    end
+
     def load_private_key(key_path, key_pass)
       key_pem = key_to_pem(File.read(key_path))
       @private_key = OpenSSL::PKey::RSA.new(key_pem, key_pass)

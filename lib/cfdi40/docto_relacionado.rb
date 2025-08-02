@@ -6,7 +6,7 @@ module Cfdi40
     define_attribute :serie, xml_attribute: "Serie"
     define_attribute :folio, xml_attribute: "Folio"
     define_attribute :moneda_dr, xml_attribute: "MonedaDR", default: "MXN"
-    define_attribute :equivalencia_dr, xml_attribute: "EquivalenciaDR", default: "1"
+    define_attribute :equivalencia_dr, xml_attribute: "EquivalenciaDR", default: "1", format: :decimal
     define_attribute :num_parcialidad, xml_attribute: "NumParcialidad"
     define_attribute :imp_saldo_ant, xml_attribute: "ImpSaldoAnt", format: :t_ImporteMXN
     define_attribute :imp_pagado, xml_attribute: "ImpPagado", format: :t_ImporteMXN

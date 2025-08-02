@@ -10,7 +10,7 @@ class TestLoad < Minitest::Test
 
     assert_instance_of Cfdi40::Comprobante, cfdi
     assert_equal "06000", cfdi.lugar_expedicion
-    assert_equal "190.00", cfdi.total
+    assert_equal 190.00, cfdi.total
   end
 
   def test_load_certificate
@@ -35,11 +35,14 @@ class TestLoad < Minitest::Test
     REXML::XPath.each(xml, "cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto") do |node|
       concepto = cfdi.conceptos.children_nodes[n]
       Cfdi40::Concepto.attributes.each do |method, attribute|
-        if node[attribute].nil?
-          assert_nil concepto.public_send(method)
+        if %w[ValorUnitario Importe Cantidad Descuento].include?(attribute)
+          assert_equal node[attribute].to_f, concepto.public_send(method)
         else
-          #assert_equal node[attribute], concepto.public_send(method)
-          assert_equal node[attribute], concepto.formated_value(method)
+          if node[attribute].nil?
+            assert_nil concepto.public_send(method)
+          else
+            assert_equal node[attribute], concepto.public_send(method)
+          end
         end
       end
       assert !concepto.importe_neto.nil?, "importe_neto should exist"
@@ -66,7 +69,11 @@ class TestLoad < Minitest::Test
         if iva_node[attribute].nil?
           assert_nil concepto.traslado_iva_node.public_send(method)
         else
-          assert_equal iva_node.attributes[attribute], concepto.traslado_iva_node.public_send(method)
+          if %w[Base TasaOCuota Importe].include?(attribute)
+            assert_equal iva_node.attributes[attribute].to_f, concepto.traslado_iva_node.public_send(method)
+          else
+            assert_equal iva_node.attributes[attribute], concepto.traslado_iva_node.public_send(method)
+          end
         end
       end
       n += 1
@@ -82,14 +89,18 @@ class TestLoad < Minitest::Test
     cfdi = Cfdi40.open(xml_string)
     impuestos_node = REXML::XPath.first(xml, "cfdi:Comprobante/cfdi:Impuestos")
 
-    assert_equal impuestos_node["TotalImpuestosTrasladados"], cfdi.total_impuestos_trasladados
+    assert_equal impuestos_node["TotalImpuestosTrasladados"].to_f, cfdi.total_impuestos_trasladados
     total_iva_path = "cfdi:Comprobante/cfdi:Impuestos/cfdi:Traslados/cfdi:Traslado[@Impuesto='002']"
     total_iva_node = REXML::XPath.first(xml, total_iva_path)
     Cfdi40::Traslado.attributes.each do |method, attribute|
       if total_iva_node[attribute].nil?
         assert_nil cfdi.total_iva_node.public_send(method)
       else
-        assert_equal total_iva_node[attribute], cfdi.total_iva_node.public_send(method)
+        if %w[Base TasaOCuota Importe].include?(attribute)
+          assert_equal total_iva_node[attribute].to_f, cfdi.total_iva_node.public_send(method)
+        else
+          assert_equal total_iva_node[attribute], cfdi.total_iva_node.public_send(method)
+        end
       end
     end
     assert_equal 26.21, cfdi.total_iva
@@ -142,8 +153,61 @@ class TestLoad < Minitest::Test
     assert_equal total_xml.to_f + 80, cfdi.total
   end
 
+  def test_that_do_not_calculate_total_in_readonly_mode
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    xml_string.gsub!(/190.00/, '199.50')
+    cfdi = Cfdi40.open(xml_string, mode: 'ro')
+    assert_equal 199.50, cfdi.total
+  end
+
+  def test_that_cfdi_can_not_be_modified_in_read_only_mode
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string, mode: 'ro')
+    concepto = cfdi.concepto_nodes.first
+    assert_raises(Cfdi40::Error) do
+      concepto.cantidad = 5
+    end
+  end
+
+  def test_that_loaded_xml_is_keeped
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string, mode: 'ro')
+    assert_equal xml_string, cfdi.loaded_xml
+  end
+
+  def test_that_signed_cfdi_is_readonly
+    xml_string = File.read("test/files/signed_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    assert cfdi.readonly, "expected readonly cfdi"
+  end
+
+  def test_that_signed_cfdi_is_not_modified
+    xml_string = File.read("test/files/signed_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    assert_equal xml_string, cfdi.to_xml
+  end
+
+  def test_that_lodaded_xml_is_removed_when_add_new_concepto
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    cfdi.add_concepto(
+      cantidad: 2,
+      clave_prod_serv: "81111500",
+      clave_unidad: "E48",
+      descripcion: "Tercer concepto",
+      precio_neto: 40
+    )
+    assert_nil cfdi.loaded_xml
+  end
+
+  def test_that_lodaded_xml_is_removed_when_fecha_is_changed
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    cfdi.fecha = Time.now
+
+    assert_nil cfdi.loaded_xml
+  end
+
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0
-  # TODO: Carga timbrados como solo lectura
   # TODO: ¿Puede validar la firma (si existe) del cfdi cargado?
-  # TODO: Al cargar el certificado, en base 64 se carga en el cfdi
 end

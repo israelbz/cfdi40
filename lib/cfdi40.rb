@@ -3,8 +3,11 @@
 require "nokogiri"
 require "base64"
 require "openssl"
+require "time"
 require_relative "cfdi40/version"
 require_relative "cfdi40/schema_validator"
+require_relative "cfdi40/signature_validator"
+require_relative "cfdi40/original_content"
 require_relative "cfdi40/sat_csd"
 require_relative "cfdi40/node"
 require_relative "cfdi40/comprobante"
@@ -12,6 +15,7 @@ require_relative "cfdi40/emisor"
 require_relative "cfdi40/receptor"
 require_relative "cfdi40/conceptos"
 require_relative "cfdi40/concepto"
+require_relative "cfdi40/concepto_impuestos"
 require_relative "cfdi40/impuestos"
 require_relative "cfdi40/traslados"
 require_relative "cfdi40/traslado"
@@ -27,7 +31,7 @@ require_relative "cfdi40/traslado_dr"
 require_relative "cfdi40/impuestos_p"
 require_relative "cfdi40/traslados_p"
 require_relative "cfdi40/traslado_p"
-require_relative "cfdi40/totales"
+require_relative "cfdi40/cp_totales"
 require_relative "cfdi40/xml_loader"
 
 # Leading module and entry point for all features and classes
@@ -42,8 +46,15 @@ module Cfdi40
     Comprobante.new
   end
 
-  def self.open(xml_string, mode: :readwrite)
-    loader = XmlLoader.new(xml_string)
+  # Modes:
+  # * 'rw' read and write
+  # * 'ro' read only
+  def self.open(xml_string, mode: 'rw')
+    unless mode.nil? || %w[rw ro].include?(mode)
+      STDERR.puts "Unknow mode '#{mode}' ignored. Valid modes are 'ro', 'rw'"
+      mode = nil
+    end
+    loader = XmlLoader.new(xml_string, mode)
     loader.cfdi
   end
 end
