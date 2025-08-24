@@ -89,9 +89,11 @@ module Cfdi40
 
     def calculate_from_net_price
       set_defaults
-      @precio_neto = @precio_neto.round(2)
-      @precio_bruto = (@precio_neto / ((1 + tasa_iva.to_f) * (1 + tasa_ieps.to_f))).round(6)
+      @precio_neto = @precio_neto.round(6)
+      @precio_bruto = (@precio_neto / ((1 + tasa_iva.to_f) * (1 + tasa_ieps.to_f)))
       calculate_taxes
+
+      @precio_bruto = (((@precio_neto * cantidad.to_f) - @iva - @ieps) / cantidad.to_f.round(6)).round(6)
       update_xml_attributes
     end
 
@@ -106,9 +108,9 @@ module Cfdi40
 
     def calculate_taxes
       @base_ieps = (@precio_bruto * cantidad.to_f).round(6)
-      @ieps = (@base_ieps * tasa_ieps.to_f).round(4)
+      @ieps = (@base_ieps * tasa_ieps.to_f).round(6)
       @base_iva = (@base_ieps + @ieps).round(6)
-      @iva = (@base_iva * tasa_iva.to_f).round(4)
+      @iva = (@base_iva * tasa_iva.to_f).round(6)
       @importe_bruto = @base_ieps
       @importe_neto = (@base_iva + @iva).round(2)
     end

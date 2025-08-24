@@ -70,7 +70,7 @@ class TestLoad < Minitest::Test
           assert_nil concepto.traslado_iva_node.public_send(method)
         else
           if %w[Base TasaOCuota Importe].include?(attribute)
-            assert_equal iva_node.attributes[attribute].to_f, concepto.traslado_iva_node.public_send(method)
+            assert_equal iva_node.attributes[attribute].to_f.round(2), concepto.traslado_iva_node.public_send(method)
           else
             assert_equal iva_node.attributes[attribute], concepto.traslado_iva_node.public_send(method)
           end

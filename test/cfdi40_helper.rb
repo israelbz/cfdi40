@@ -77,4 +77,40 @@ module Cfdi40Helper
     cfdi.key_pass = "12345678a"
     cfdi
   end
+
+  def cfdi_signed_ewe1709045u0
+    cfdi = Cfdi40.new
+    cfdi.lugar_expedicion = "06000"
+    cfdi.forma_pago = '01'
+    cfdi.metodo_pago = 'PUE'
+    cfdi.emisor.regimen_fiscal = '601'
+    cfdi.emisor.nombre = "ESCUELA WILSON ESQUIVEL"
+
+    cfdi.receptor.nombre = 'JUAN MANUEL LOPEZ HERNANDEZ'
+    cfdi.receptor.rfc = "XAXX010101000"
+    cfdi.receptor.domicilio_fiscal = "06000"
+    cfdi.receptor.regimen_fiscal = "616"
+    cfdi.receptor.uso_cfdi = "S01"
+
+    cfdi.add_concepto(
+      clave_prod_serv: '81111500',
+      clave_unidad: "E48",
+      descripcion: 'Prueba de concepto',
+      cantidad: 2,
+      precio_neto: 23.50
+    )
+
+    cfdi.add_concepto(
+      clave_prod_serv: '81111500',
+      clave_unidad: "E48",
+      descripcion: 'Prueba de concepto',
+      cantidad: 4,
+      precio_neto: 18.25
+    )
+
+    cfdi.cert_path = "test/files/CSD_Sucursal_1_EWE1709045U0_20230518_062206.cer"
+    cfdi.key_path = "test/files/CSD_Sucursal_1_EWE1709045U0_20230518_062206.key"
+    cfdi.key_pass = "12345678a"
+    cfdi
+  end
 end
