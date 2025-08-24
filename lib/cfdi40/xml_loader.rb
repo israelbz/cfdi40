@@ -17,6 +17,7 @@ module Cfdi40
       load_receptor
       load_conceptos
       load_impuestos
+      load_tfd
 
       @cfdi.lock if readonly?
       @cfdi.loaded_xml = xml_string
@@ -61,6 +62,14 @@ module Cfdi40
       return if impuestos_node.nil?
 
       @cfdi.load_impuestos(impuestos_node)
+    end
+
+    def load_tfd
+      tfd_namespace = { "tfd" => "http://www.sat.gob.mx/TimbreFiscalDigital" }
+      tfd_node = xml_doc.xpath("//tfd:TimbreFiscalDigital", tfd_namespace).first
+      return if tfd_node.nil?
+
+      @cfdi.load_tfd(tfd_node)
     end
   end
 end

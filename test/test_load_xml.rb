@@ -11,6 +11,7 @@ class TestLoad < Minitest::Test
     assert_instance_of Cfdi40::Comprobante, cfdi
     assert_equal "06000", cfdi.lugar_expedicion
     assert_equal 190.00, cfdi.total
+    assert_equal Time.new(2025, 4, 8, 20, 33, 8), cfdi.fecha
   end
 
   def test_load_certificate
@@ -206,6 +207,18 @@ class TestLoad < Minitest::Test
     cfdi.fecha = Time.now
 
     assert_nil cfdi.loaded_xml
+  end
+
+  def test_nil_timbre
+    xml_string = File.read("test/files/simple_cfdi.xml")
+    cfdi = Cfdi40.open(xml_string)
+    assert_nil cfdi.timbre
+  end
+
+  def test_access_to_timbre
+    cfdi = Cfdi40.open(File.read('test/files/cfdi_timbrado.xml'))
+    assert_instance_of Cfdi40::Timbre, cfdi.timbre
+    assert_equal "8E5C7749-7E57-4EC6-9EBD-7971F875DF0A", cfdi.timbre.uuid
   end
 
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0

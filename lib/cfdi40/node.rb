@@ -187,7 +187,18 @@ module Cfdi40
       self.class.attributes.each do |variable_name, attr_name|
         next if ng_node.attributes[attr_name].nil?
 
-        instance_variable_set("@#{variable_name}".to_sym, ng_node.attributes[attr_name].value)
+        case self.class.formats[variable_name]
+        when :t_FechaH, :t_FechaHora
+          begin
+            parsed_time = Time.strptime(ng_node.attributes[attr_name].value, "%Y-%m-%dT%H:%M:%S")
+            instance_variable_set("@#{variable_name}".to_sym, parsed_time)
+          rescue
+            puts "Warning: cannot parse '#{value}' as Time"
+            next
+          end
+        else
+          instance_variable_set("@#{variable_name}".to_sym, ng_node.attributes[attr_name].value)
+        end
       end
     end
 

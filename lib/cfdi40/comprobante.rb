@@ -264,6 +264,20 @@ module Cfdi40
       traslados.traslados_iva.map(&:importe).map(&:to_f).sum.round(2)
     end
 
+    def load_tfd(tfd_node)
+      timbre = Cfdi40::Timbre.new
+      timbre.load_from_ng_node(tfd_node)
+      timbre.parent_node = complemento
+      complemento.children_nodes << timbre
+      timbre
+    end
+
+    def timbre
+      return nil unless defined?(@complemento)
+
+      complemento.timbre
+    end
+
     private
 
     def add_node_concepto_actividad_pago

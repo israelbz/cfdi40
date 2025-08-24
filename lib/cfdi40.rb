@@ -32,6 +32,7 @@ require_relative "cfdi40/impuestos_p"
 require_relative "cfdi40/traslados_p"
 require_relative "cfdi40/traslado_p"
 require_relative "cfdi40/cp_totales"
+require_relative "cfdi40/timbre"
 require_relative "cfdi40/xml_loader"
 
 # Leading module and entry point for all features and classes

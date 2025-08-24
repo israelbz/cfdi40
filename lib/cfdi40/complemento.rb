@@ -16,5 +16,9 @@ module Cfdi40
       @children_nodes << @pagos
       @pagos
     end
+
+    def timbre
+      @children_nodes.select { |children| children.is_a?(Cfdi40::Timbre) }.first
+    end
   end
 end
