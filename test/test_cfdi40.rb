@@ -237,7 +237,16 @@ class TestCfdi40 < Minitest::Test
     assert_equal "5.52", node["Importe"]
   end
 
-  def test_change_to_readonly_when_signed
+  def test_that_cadena_original_is_keeped_when_is_signed
+    cfdi = simple_cfdi_with_key_cert_path
+    refute cfdi.readonly, 'cfdi should not be readonly'
+    cfdi.add_concepto(simple_concepto.merge(cantidad: 1, descripcion: "Otro", precio_neto: 116))
+    assert_nil cfdi.cadena_original
+    cfdi.to_xml
+    refute_nil cfdi.cadena_original
+  end
+
+  def test_change_to_readonly_when_is_signed
     cfdi = simple_cfdi_with_key_cert_path
     refute cfdi.readonly, 'cfdi should not be readonly'
     cfdi.add_concepto(simple_concepto.merge(cantidad: 1, descripcion: "Otro", precio_neto: 116))

@@ -2,7 +2,7 @@ require "test_helper"
 require "rexml/document"
 
 class TestOriginalContent < Minitest::Test
-  def test_validates_signed_xml
+  def test_generates_original_content
     xml_string = File.read("test/files/simple_cfdi.xml")
     expected_string =
       "||4.0|2025-04-08T20:33:08|30001000000400002310|163.79|MXN|190.00|I|01|06000|XAMA620210DQ5" \

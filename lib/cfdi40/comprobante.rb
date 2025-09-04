@@ -31,7 +31,7 @@ module Cfdi40
     define_attribute :lugar_expedicion, xml_attribute: "LugarExpedicion"
     define_attribute :confirmacion, xml_attribute: "Confirmacion"
 
-    attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors
+    attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors, :cadena_original
     attr_writer :key_data, :key_pass
     attr_accessor :loaded_xml
 
@@ -91,7 +91,8 @@ module Cfdi40
 
       raise Error, "Key and certificate not match" unless @sat_csd.valid_pair?
 
-      digest = @sat_csd.private_key.sign(OpenSSL::Digest.new("SHA256"), original_content)
+      @cadena_original = original_content
+      digest = @sat_csd.private_key.sign(OpenSSL::Digest.new("SHA256"), @cadena_original)
       @sello = Base64.strict_encode64 digest
       lock
       @docxml = nil
@@ -218,10 +219,6 @@ module Cfdi40
 
     def signed?
       !docxml.root.attributes["Sello"].nil?
-    end
-
-    def cadena_original
-      original_content
     end
 
     def original_content
