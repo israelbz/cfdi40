@@ -101,4 +101,12 @@ class TestConcepto < Minitest::Test
 
     assert_equal "2.000000", concepto_node["Cantidad"]
   end
+
+  def test_that_descripcion_has_1000_chars_max
+    long_desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * 50
+    assert long_desc.size > 1_000, "test string is less than 1,000 characters"
+    concepto = Cfdi40::Concepto.new
+    concepto.descripcion = long_desc
+    assert_equal 1_000, concepto.descripcion.size
+  end
 end

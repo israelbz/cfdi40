@@ -85,6 +85,10 @@ module Cfdi40
       calculate_from_gross_price
     end
 
+    def descripcion=(desc)
+      @descripcion = desc.to_s[0..999]
+    end
+
     private
 
     def calculate_from_net_price
