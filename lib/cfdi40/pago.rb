@@ -3,7 +3,7 @@
 # /cfdi:Comprobante/cfdi:Complemento/pago20:Pagos/pago20:Pago
 module Cfdi40
   class Pago < Node
-    define_attribute :monto, xml_attribute: "Monto", format: :t_Importe
+    define_attribute :monto, xml_attribute: "Monto", format: :t_ImporteMXN
     define_attribute :fecha_pago, xml_attribute: "FechaPago", format: :t_FechaH
     define_attribute :forma_pago, xml_attribute: "FormaDePagoP"
     define_attribute :moneda, xml_attribute: "MonedaP", readonly: true, default: "MXN"

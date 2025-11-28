@@ -77,9 +77,7 @@ Hasta ahora:
     cfdi.receptor.regimen_fiscal = '616'
     cfdi.receptor.uso_cfdi = 'CP01'
 
-    # Agrega un concepto en pesos,
-    # precio final al cliente (neto)
-    # causa IVA con tasa de 16% (default)
+    # Agrega un pago en pesos
     cfdi.add_pago(
       monto: 200.17,
       uuid: 'e40229b3-5c4b-46fb-9ba8-707df828a5bc',
