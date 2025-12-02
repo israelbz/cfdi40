@@ -76,7 +76,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "MXN", node["MonedaP"]
     assert_equal "01", node["FormaDePagoP"]
     assert_equal "2023-04-01T12:20:34", node["FechaPago"]
-    assert_equal "200.170000", node["Monto"]
+    assert_equal "200.17", node["Monto"]
     assert_equal "1", node["TipoCambioP"]
   end
 

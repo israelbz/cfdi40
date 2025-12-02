@@ -33,10 +33,11 @@ module Cfdi40
       @@element_names ||= {}
     end
 
-    def self.define_attribute(accessor, xml_attribute:, default: nil, format: nil, readonly: false)
+    # +no_writer+ option implies that the writer methos must be defined in the child class.
+    def self.define_attribute(accessor, xml_attribute:, default: nil, format: nil, readonly: false, no_writer: nil)
       verify_class_variables
       define_reader(accessor, format)
-      define_writer(accessor, readonly, format)
+      define_writer(accessor, readonly, format) unless no_writer
 
       @@attributes[name][accessor.to_sym] = xml_attribute
       @@default_values[name][accessor.to_sym] = default if default

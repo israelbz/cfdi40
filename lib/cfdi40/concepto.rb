@@ -12,7 +12,7 @@ module Cfdi40
     define_attribute :cantidad, xml_attribute: "Cantidad", default: 1, format: :decimal
     define_attribute :clave_unidad, xml_attribute: "ClaveUnidad"
     define_attribute :unidad, xml_attribute: "Unidad"
-    define_attribute :descripcion, xml_attribute: "Descripcion"
+    define_attribute :descripcion, xml_attribute: "Descripcion", no_writer: true
     define_attribute :valor_unitario, xml_attribute: "ValorUnitario", format: :t_Importe
     define_attribute :importe, xml_attribute: "Importe", format: :t_Importe
     define_attribute :descuento, xml_attribute: "Descuento", format: :t_Importe

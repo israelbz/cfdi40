@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cfdi40 (0.3.1)
+    cfdi40 (0.3.2)
       nokogiri (>= 1.10.10)
 
 GEM
