@@ -89,6 +89,10 @@ Hasta ahora:
       importe_saldo_anterior: 845.673
     )
 
+    # Elimina el n-ésimo pago
+    # 0 es el primer pago
+    cfdi.remove_pago(1)
+
     # Archivos CSD
     cfdi.cert_path = '/path_to/certificado.cer'
     cfdi.key_path = '/path_to/llave_privada.key'
