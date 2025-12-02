@@ -8,6 +8,12 @@ module Cfdi40
       pagos.add_pago(attributes)
     end
 
+    def pago_nodes
+      return [] unless defined?(@pagos)
+
+      pagos.pago_nodes
+    end
+
     def pagos
       return @pagos if defined?(@pagos)
 

@@ -255,6 +255,12 @@ module Cfdi40
       @conceptos.children_nodes
     end
 
+    def pago_nodes
+      return [] unless defined?(@complemento)
+
+      complemento.pago_nodes
+    end
+
     def total_iva_node
       # TODO: Puede haber más de un nodo, cuando hay varias tasas de iva
       return nil unless impuestos_node

@@ -265,4 +265,9 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "17.71", node["TotalTrasladosImpuestoIVA16"]
     assert_equal "128.39", node["MontoTotalPagos"]
   end
+
+  def test_access_to_pagos_list
+    cfdi = cfdi_pago2
+    assert_equal 2, cfdi.pago_nodes.count
+  end
 end
