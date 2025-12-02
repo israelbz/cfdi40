@@ -164,6 +164,12 @@ module Cfdi40
       @children_nodes << child_node
     end
 
+    def delete_child(child_node)
+      raise Error, "child_node must be a Node object" unless child_node.is_a?(Node)
+
+      @children_nodes.delete(child_node)
+    end
+
     # Locks for readonly this node and children
     def lock
       @readonly = true

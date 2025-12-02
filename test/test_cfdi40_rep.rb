@@ -229,4 +229,40 @@ class TestCfdi40Rep < Minitest::Test
 
     assert_empty cfdi.errors
   end
+
+  def cfdi_pago2
+    cfdi = cfdi_pago
+    cfdi.add_pago(
+      monto: 128.39,
+      uuid: "d60529b3-5c4b-46fb-9ba8-707df828b64a",
+      num_parcialidad: 1,
+      fecha_pago: "2023-04-01T12:20:34",
+      forma_pago: "01",
+      importe_saldo_anterior: 128.39
+    )
+    cfdi
+  end
+
+  def test_second_pago
+    cfdi = cfdi_pago2
+    xml = REXML::Document.new(cfdi.to_s)
+    node_path = "cfdi:Comprobante/cfdi:Complemento/pago20:Pagos/pago20:Totales"
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal "283.24", node["TotalTrasladosBaseIVA16"]
+    assert_equal "45.32", node["TotalTrasladosImpuestoIVA16"]
+    assert_equal "328.56", node["MontoTotalPagos"]
+  end
+
+  def test_that_pago_can_be_deleted
+    cfdi = cfdi_pago2
+    cfdi.remove_pago(0)
+    xml = REXML::Document.new(cfdi.to_s)
+    node_path = "cfdi:Comprobante/cfdi:Complemento/pago20:Pagos/pago20:Totales"
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal "110.68", node["TotalTrasladosBaseIVA16"]
+    assert_equal "17.71", node["TotalTrasladosImpuestoIVA16"]
+    assert_equal "128.39", node["MontoTotalPagos"]
+  end
 end

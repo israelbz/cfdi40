@@ -27,6 +27,12 @@ module Cfdi40
       true
     end
 
+    def remove_pago(index)
+      @children_nodes.delete(pago_nodes[index])
+      update_totales
+      true
+    end
+
     def update_totales
       update_totales_traslado_iva16
       update_total_monto

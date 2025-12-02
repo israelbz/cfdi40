@@ -191,6 +191,13 @@ module Cfdi40
       complemento.add_pago(attributes)
     end
 
+    def remove_pago(index)
+      return unless defined?(@complemento)
+      return if complemento.pagos.pago_nodes.empty?
+
+      complemento.pagos.remove_pago(index.to_i)
+    end
+
     def to_s
       to_xml
     end
