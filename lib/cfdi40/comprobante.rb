@@ -198,6 +198,14 @@ module Cfdi40
       complemento.pagos.remove_pago(index.to_i)
     end
 
+    # See test_adding_pago_with_n_docto_relacionados in file test/test_cfdi40_rep.rb 
+    def add_splitted_pago(attributes = {})
+      raise Error, "CFDi debe ser tipo 'P'" unless tipo_de_comprobante == "P"
+
+      add_node_concepto_actividad_pago
+      complemento.add_splitted_pago(attributes)
+    end
+
     def to_s
       to_xml
     end

@@ -14,15 +14,15 @@ module Cfdi40
     # Generate docto_relacionado node
     # Data for dcto_relacionado node is obtained from de accessors
     #  uuid, serie, folio
-    def add_docto_relacionado
+    def add_docto_relacionado(attributes = {})
       docto_relacionado = DoctoRelacionado.new
       docto_relacionado.parent_node = self
-      docto_relacionado.id_documento = uuid
-      docto_relacionado.serie = serie
-      docto_relacionado.folio = folio
-      docto_relacionado.num_parcialidad = num_parcialidad
-      docto_relacionado.imp_saldo_ant = importe_saldo_anterior.round(2)
-      docto_relacionado.imp_pagado = monto
+      docto_relacionado.id_documento = attributes[:uuid]
+      docto_relacionado.serie = attributes[:serie]
+      docto_relacionado.folio = attributes[:folio]
+      docto_relacionado.num_parcialidad = attributes[:num_parcialidad]
+      docto_relacionado.imp_saldo_ant = attributes[:importe_saldo_anterior].round(2)
+      docto_relacionado.imp_pagado = attributes[:imp_pagado]
       docto_relacionado.calculate!
       @children_nodes << docto_relacionado
     end

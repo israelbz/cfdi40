@@ -13,18 +13,41 @@ module Cfdi40
     def add_pago(attributes = {})
       pago = Pago.new
       pago.parent_node = self
+      attributes_doc_rel = { imp_pagado: attributes[:monto] }
+      doc_rel_keys = [:uuid, :serie, :folio, :num_parcialidad, :importe_saldo_anterior, :objeto_impuestos]
+      attributes.each do |key, value|
+        if doc_rel_keys.include?(key)
+          attributes_doc_rel[key] = value
+        else
+          method_name = "#{key}=".to_sym
+          raise Error, ":#{key} no se puede asignar al nodo Pago" unless pago.respond_to?(method_name)
+
+          pago.public_send(method_name, value)
+        end
+      end
+      pago.monto = pago.monto.round(2)
+      pago.add_docto_relacionado(attributes_doc_rel)
+      pago.add_impuestos_p
+      @children_nodes << pago
+      update_totales
+      true
+    end
+
+    def add_splitted_pago(attributes = {})
+      pago = Pago.new
+      pago.parent_node = self
+      docs = attributes.delete(:docs)
       attributes.each do |key, value|
         method_name = "#{key}=".to_sym
         raise Error, ":#{key} no se puede asignar al nodo Pago" unless pago.respond_to?(method_name)
 
         pago.public_send(method_name, value)
       end
-      pago.monto = pago.monto.round(2)
-      pago.add_docto_relacionado
+      docs.each { |doc_attributes| pago.add_docto_relacionado(doc_attributes) }
+      pago.monto = docs.map { |doc_attributes| doc_attributes[:imp_pagado].to_f }.sum.round(2)
       pago.add_impuestos_p
       @children_nodes << pago
       update_totales
-      true
     end
 
     def remove_pago(index)

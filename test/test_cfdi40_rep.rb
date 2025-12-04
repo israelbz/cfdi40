@@ -270,4 +270,41 @@ class TestCfdi40Rep < Minitest::Test
     cfdi = cfdi_pago2
     assert_equal 2, cfdi.pago_nodes.count
   end
+
+  def test_adding_pago_with_n_docto_relacionados
+    cfdi = cfdi_base
+    cfdi.tipo_de_comprobante = "P"
+    cfdi.moneda = "XXX"
+
+    cfdi.add_splitted_pago(
+      fecha_pago: "2023-05-01T12:20:34",
+      forma_pago: "01",
+      docs: [
+        {
+          imp_pagado: 200.17,
+          uuid: "e40229b3-5c4b-46fb-9ba8-707df828a5bc",
+          serie: "A",
+          folio: "12345",
+          num_parcialidad: 2,
+          importe_saldo_anterior: 845.673
+        },
+        {
+          imp_pagado: 590.56,
+          uuid: "d60529b3-5c4b-46fb-9ba8-707df828b64a",
+          num_parcialidad: 1,
+          importe_saldo_anterior: 590.56
+        }
+      ]
+    )
+    assert_equal 1, cfdi.pago_nodes.count
+    xml = REXML::Document.new(cfdi.to_s)
+    node_path = "cfdi:Comprobante/cfdi:Complemento/pago20:Pagos/pago20:Totales"
+    node = REXML::XPath.first(xml, node_path)
+    assert_instance_of REXML::Element, node
+    assert_equal "681.66", node["TotalTrasladosBaseIVA16"]
+    assert_equal "109.07", node["TotalTrasladosImpuestoIVA16"]
+    assert_equal "790.73", node["MontoTotalPagos"]
+
+    assert_equal 2, REXML::XPath.match(xml, "//pago20:DoctoRelacionado").count
+  end
 end

@@ -8,6 +8,11 @@ module Cfdi40
       pagos.add_pago(attributes)
     end
 
+    def add_splitted_pago(attributes = {})
+      pagos.totales_node
+      pagos.add_splitted_pago(attributes)
+    end
+
     def pago_nodes
       return [] unless defined?(@pagos)
 
