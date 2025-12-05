@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cfdi:Comprobante Exportacion='01' Fecha='2025-12-04T17:45:47' LugarExpedicion='12345' Moneda='XXX' TipoDeComprobante='P' Version='4.0' xmlns:cfdi='http://www.sat.gob.mx/cfd/4' xsi:schemaLocation='http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <cfdi:Emisor Nombre='ESCUELA KEMPER URGATE' RegimenFiscal='612' Rfc='EKU9003173C9'/>
+  <cfdi:Receptor DomicilioFiscalReceptor='62661' Nombre='INDISTRIA ILUMINADORA DE ALMACENES' RegimenFiscalReceptor='601' Rfc='IIA040805DZ4'/>
+  <cfdi:Conceptos/>
+</cfdi:Comprobante>

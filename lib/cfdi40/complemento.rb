@@ -28,6 +28,19 @@ module Cfdi40
       @pagos
     end
 
+    def load_pagos(pagos_node)
+      @pagos = Cfdi40::Pagos.new
+      @pagos.load_from_ng_node(pagos_node)
+      @pagos.parent_node = self
+      pagos_node.xpath("//pago20:Pago", Cfdi40::Pagos::NG_NAMESPACE).each do |pago_node|
+        @pagos.load_pago(pago_node)
+      end
+      totales_node = pagos_node.xpath("//pago20:Totales", Cfdi40::Pagos::NG_NAMESPACE).first
+      @pagos.load_totales(totales_node) unless totales_node.nil?
+      @children_nodes << @pagos
+      @pagos
+    end
+
     def timbre
       @children_nodes.select { |children| children.is_a?(Cfdi40::Timbre) }.first
     end

@@ -17,6 +17,7 @@ module Cfdi40
       load_receptor
       load_conceptos
       load_impuestos
+      load_pagos
       load_tfd
 
       @cfdi.lock if readonly?
@@ -70,6 +71,13 @@ module Cfdi40
       return if tfd_node.nil?
 
       @cfdi.load_tfd(tfd_node)
+    end
+
+    def load_pagos
+      pagos_node = xml_doc.xpath("//pago20:Pagos", Cfdi40::Pagos::NG_NAMESPACE).first
+      return if pagos_node.nil?
+
+      @cfdi.load_pagos(pagos_node)
     end
   end
 end

@@ -2,6 +2,7 @@
 
 module Cfdi40
   class Pagos < Node
+    NG_NAMESPACE = { "pago20" => "http://www.sat.gob.mx/Pagos20" }
     define_namespace "pago20", "http://www.sat.gob.mx/Pagos20"
     define_attribute :schema_location,
                      xml_attribute: "xsi:schemaLocation",
@@ -97,6 +98,25 @@ module Cfdi40
 
     def pago_nodes
       @children_nodes.select { |node| node.instance_of?(::Cfdi40::Pago) }
+    end
+
+    def load_pago(pago_node)
+      pago = Pago.new
+      pago.load_from_ng_node(pago_node)
+      pago.parent_node = self
+      @children_nodes << pago
+      pago_node.xpath("//pago20:DoctoRelacionado", { "pago20" => "http://www.sat.gob.mx/Pagos20" }).each do |dr_node|
+        pago.load_dr(dr_node)
+      end
+      pago
+    end
+
+    def load_totales(totales_node)
+      cp_totales = CpTotales.new
+      cp_totales.load_from_ng_node(totales_node)
+      cp_totales.parent_node = self
+      @children_nodes << cp_totales
+      cp_totales
     end
   end
 end

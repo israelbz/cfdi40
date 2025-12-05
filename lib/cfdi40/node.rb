@@ -277,7 +277,5 @@ module Cfdi40
 
       parent_node&.clean_cached_xml
     end
-
-
   end
 end

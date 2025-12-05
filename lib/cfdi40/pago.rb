@@ -55,5 +55,15 @@ module Cfdi40
       end
       @summary = summary
     end
+
+    def load_dr(dr_node)
+      dr = DoctoRelacionado.new
+      dr.load_from_ng_node(dr_node)
+      dr.parent_node = self
+      @children_nodes << dr
+      imp_dr_node = dr_node.xpath("//pago20:ImpuestosDR", Cfdi40::Pagos::NG_NAMESPACE).first
+      dr.load_impuestos_dr(imp_dr_node) unless imp_dr_node.nil?
+      dr
+    end
   end
 end

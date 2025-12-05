@@ -221,6 +221,14 @@ class TestLoad < Minitest::Test
     assert_equal "8E5C7749-7E57-4EC6-9EBD-7971F875DF0A", cfdi.timbre.uuid
   end
 
+  def test_load_pagos
+    cfdi = Cfdi40.open(File.read('test/files/xml_rep.xml'))
+    
+    assert_equal 1, cfdi.pago_nodes.count
+    pago_node = cfdi.pago_nodes.first
+    assert_equal 2, pago_node.docto_relacionados.count
+  end
+
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0
   # TODO: ¿Puede validar la firma (si existe) del cfdi cargado?
 end

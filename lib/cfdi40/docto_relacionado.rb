@@ -64,5 +64,15 @@ module Cfdi40
       @children_nodes << @impuestos_dr
       @impuestos_dr
     end
+
+    def load_impuestos_dr(impuestos_dr_node)
+      @impuestos_dr = ImpuestosDR.new
+      @impuestos_dr.load_from_ng_node(impuestos_dr_node)
+      @impuestos_dr.parent_node = self
+      @children_nodes << @impuestos_dr
+      tr_dr_node = impuestos_dr_node.xpath("//pago20:TrasladosDR", Cfdi40::Pagos::NG_NAMESPACE).first
+      @impuestos_dr.load_traslados_dr(tr_dr_node) unless tr_dr_node.nil?
+      @impuestos_dr
+    end
   end
 end

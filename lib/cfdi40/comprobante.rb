@@ -290,6 +290,10 @@ module Cfdi40
       timbre
     end
 
+    def load_pagos(pagos_node)
+      complemento.load_pagos(pagos_node)
+    end
+
     def timbre
       return nil unless defined?(@complemento)
 
