@@ -227,6 +227,10 @@ class TestLoad < Minitest::Test
     assert_equal 1, cfdi.pago_nodes.count
     pago_node = cfdi.pago_nodes.first
     assert_equal 2, pago_node.docto_relacionados.count
+    assert_instance_of Cfdi40::ImpuestosP, pago_node.impuestos_p_node
+    assert_instance_of Cfdi40::TrasladosP, pago_node.impuestos_p_node.traslados_p_node
+    assert_equal 1, pago_node.impuestos_p_node.traslados_p_node.traslado_p_nodes.count
+    assert_instance_of Cfdi40::TrasladoP, pago_node.impuestos_p_node.traslados_p_node.traslado_p_nodes.first
   end
 
   # TODO: Prueba para validar que sea un CFDI y que sea version 4.0

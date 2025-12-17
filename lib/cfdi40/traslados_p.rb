@@ -14,5 +14,16 @@ module Cfdi40
         add_child_node traslado_p
       end
     end
+
+    def traslado_p_nodes
+      @children_nodes.select { |child| child.instance_of?(Cfdi40::TrasladoP) }
+    end
+
+    def load_traslado_p(ng_node)
+      traslado_p = TrasladoP.new
+      traslado_p.load_from_ng_node(ng_node)
+      add_child_node traslado_p
+      traslado_p
+    end
   end
 end

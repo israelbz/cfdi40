@@ -103,11 +103,12 @@ module Cfdi40
     def load_pago(pago_node)
       pago = Pago.new
       pago.load_from_ng_node(pago_node)
-      pago.parent_node = self
-      @children_nodes << pago
+      add_child_node pago
       pago_node.xpath("//pago20:DoctoRelacionado", { "pago20" => "http://www.sat.gob.mx/Pagos20" }).each do |dr_node|
         pago.load_dr(dr_node)
       end
+      imp_p_node = pago_node.xpath("//pago20:ImpuestosP", { "pago20" => "http://www.sat.gob.mx/Pagos20" }).first
+      pago.load_impuestos_p(imp_p_node) if imp_p_node
       pago
     end
 

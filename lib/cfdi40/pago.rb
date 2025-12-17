@@ -38,7 +38,7 @@ module Cfdi40
 
       @docto_relacionados =
         @children_nodes.select do |child|
-          child if child.instance_of?(::Cfdi40::DoctoRelacionado)
+          child.instance_of?(::Cfdi40::DoctoRelacionado)
         end
     end
 
@@ -64,6 +64,19 @@ module Cfdi40
       imp_dr_node = dr_node.xpath("//pago20:ImpuestosDR", Cfdi40::Pagos::NG_NAMESPACE).first
       dr.load_impuestos_dr(imp_dr_node) unless imp_dr_node.nil?
       dr
+    end
+
+    def impuestos_p_node
+      @children_nodes.select { |child| child.instance_of?(Cfdi40::ImpuestosP) }.first
+    end
+
+    def load_impuestos_p(ng_node)
+      imp_p = ImpuestosP.new
+      imp_p.load_from_ng_node(ng_node)
+      add_child_node imp_p
+      trns_p_node = ng_node.xpath("//pago20:TrasladosP", { "pago20" => "http://www.sat.gob.mx/Pagos20" }).first
+      imp_p.load_traslados_p_node(trns_p_node)
+      imp_p
     end
   end
 end

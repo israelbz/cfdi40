@@ -91,7 +91,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "A", node["Serie"]
     assert_equal "12345", node["Folio"]
     assert_equal "MXN", node["MonedaDR"]
-    assert_equal "1.000000", node["EquivalenciaDR"]
+    assert_equal "1", node["EquivalenciaDR"]
     assert_equal "2", node["NumParcialidad"]
     assert_equal "845.67", node["ImpSaldoAnt"]
     assert_equal "200.17", node["ImpPagado"]
