@@ -66,6 +66,15 @@ class TestCfdi40Rep < Minitest::Test
                  node["xsi:schemaLocation"]
   end
 
+  def test_namespace_pagos_in_root_node
+    cfdi = cfdi_pago
+    cfdi.namespace_pagos_on_root = true
+    xml = REXML::Document.new(cfdi.to_s)
+    assert_equal "http://www.sat.gob.mx/Pagos20", xml.root["xmlns:pago20"]
+    assert_includes xml.root["xsi:schemaLocation"],
+                    "http://www.sat.gob.mx/Pagos20 http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos20.xsd"
+  end
+
   def test_attributes_of_pago
     cfdi = cfdi_pago
     xml = REXML::Document.new(cfdi.to_s)

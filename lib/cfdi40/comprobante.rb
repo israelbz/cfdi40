@@ -32,7 +32,7 @@ module Cfdi40
     define_attribute :confirmacion, xml_attribute: "Confirmacion"
 
     attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors, :cadena_original
-    attr_writer :key_data, :key_pass
+    attr_writer :key_data, :key_pass, :namespace_pagos_on_root
     attr_accessor :loaded_xml
 
     def initialize
@@ -47,6 +47,7 @@ module Cfdi40
       @sat_csd = SatCsd.new
       @fecha ||= Time.now
       @children_nodes = [@emisor, @receptor, @conceptos]
+      @namespace_pagos_on_root = false
       set_defaults
     end
 
@@ -214,6 +215,8 @@ module Cfdi40
       return loaded_xml if !loaded_xml.nil? && signed?
 
       sign unless signed?
+      return xml_string_ns_pagos_on_root if @namespace_pagos_on_root && pago_nodes.count > 0
+
       docxml.to_xml
     end
 
@@ -298,6 +301,14 @@ module Cfdi40
       return nil unless defined?(@complemento)
 
       complemento.timbre
+    end
+
+    # Some PACs require that the namespace pago20 be placed in root node
+    def add_namespace_pagos_to_root
+      self.class.define_namespace "pago20", "http://www.sat.gob.mx/Pagos20"
+      @schema_location += " http://www.sat.gob.mx/Pagos20 " \
+                           "http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos20.xsd"
+      true
     end
 
     private
@@ -398,6 +409,17 @@ module Cfdi40
       @complemento.parent_node = self
       @children_nodes << @complemento
       @complemento
+    end
+
+    # Creates a new XML an change and puts the namespace pagos on root element.
+    def xml_string_ns_pagos_on_root
+      tmp_nkgdoc = Nokogiri::XML(docxml.to_xml)
+      tmp_nkgdoc.root["xmlns:pago20"] = "http://www.sat.gob.mx/Pagos20"
+      unless tmp_nkgdoc.root["xsi:schemaLocation"].include?("Pagos20")
+        tmp_nkgdoc.root["xsi:schemaLocation"] += " http://www.sat.gob.mx/Pagos20" \
+                                                 " http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos20.xsd"
+      end
+      tmp_nkgdoc.to_xml
     end
   end
 end
