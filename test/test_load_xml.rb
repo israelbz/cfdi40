@@ -222,11 +222,23 @@ class TestLoad < Minitest::Test
   end
 
   def test_load_pagos
-    cfdi = Cfdi40.open(File.read('test/files/xml_rep.xml'))
+    cfdi = Cfdi40.open(File.read('test/files/rep.xml'))
     
     assert_equal 1, cfdi.pago_nodes.count
     pago_node = cfdi.pago_nodes.first
     assert_equal 2, pago_node.docto_relacionados.count
+    assert_instance_of Cfdi40::ImpuestosP, pago_node.impuestos_p_node
+    assert_instance_of Cfdi40::TrasladosP, pago_node.impuestos_p_node.traslados_p_node
+    assert_equal 1, pago_node.impuestos_p_node.traslados_p_node.traslado_p_nodes.count
+    assert_instance_of Cfdi40::TrasladoP, pago_node.impuestos_p_node.traslados_p_node.traslado_p_nodes.first
+  end
+
+  def test_load_pagos_cfdi_timbrado
+    cfdi = Cfdi40.open(File.read('test/files/rep_timbrado.xml'))
+    
+    assert_equal 1, cfdi.pago_nodes.count
+    pago_node = cfdi.pago_nodes.first
+    assert_equal 1, pago_node.docto_relacionados.count
     assert_instance_of Cfdi40::ImpuestosP, pago_node.impuestos_p_node
     assert_instance_of Cfdi40::TrasladosP, pago_node.impuestos_p_node.traslados_p_node
     assert_equal 1, pago_node.impuestos_p_node.traslados_p_node.traslado_p_nodes.count
