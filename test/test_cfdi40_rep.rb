@@ -186,6 +186,7 @@ class TestCfdi40Rep < Minitest::Test
   def test_that_insert_concepto_node
     cfdi = cfdi_pago
     xml = REXML::Document.new(cfdi.to_s)
+    assert_equal 1, REXML::XPath.match(xml, "//cfdi:Concepto").size
     node_path = "cfdi:Comprobante/cfdi:Conceptos/cfdi:Concepto"
     node = REXML::XPath.first(xml, node_path)
 
@@ -197,6 +198,13 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "0", node["Importe"]
     assert_equal "ACT", node["ClaveUnidad"]
     assert_equal "84111506", node["ClaveProdServ"]
+  end
+
+  def test_only_one_concepto_when_modify_rep_loaded
+    cfdi = Cfdi40.open(File.read("test/files/rep.xml"))
+    cfdi.add_pago(datos_pago.merge(uuid: "e40229b3-5c4b-46fb-9ba8-707df828a5b9"))
+    xml = REXML::Document.new(cfdi.to_s)
+    assert_equal 1, REXML::XPath.match(xml, "//cfdi:Concepto").size
   end
 
   def test_uso_cfdi_with_complemento

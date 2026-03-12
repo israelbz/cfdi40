@@ -314,7 +314,7 @@ module Cfdi40
     private
 
     def add_node_concepto_actividad_pago
-      return if defined?(@concepto_actividad)
+      return if @conceptos.children_nodes.size > 0
 
       @receptor.uso_cfdi = "CP01"
       @concepto_actividad = Concepto.new
