@@ -194,7 +194,7 @@ class TestCfdi40Rep < Minitest::Test
     assert_equal "0", node["ValorUnitario"]
     assert_equal "01", node["ObjetoImp"]
     assert_equal "Pago", node["Descripcion"]
-    assert_equal "1.000000", node["Cantidad"]
+    assert_equal "1", node["Cantidad"]
     assert_equal "0", node["Importe"]
     assert_equal "ACT", node["ClaveUnidad"]
     assert_equal "84111506", node["ClaveProdServ"]

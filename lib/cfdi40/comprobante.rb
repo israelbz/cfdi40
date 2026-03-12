@@ -317,14 +317,9 @@ module Cfdi40
       return if @conceptos.children_nodes.size > 0
 
       @receptor.uso_cfdi = "CP01"
-      @concepto_actividad = Concepto.new
-      @concepto_actividad.clave_prod_serv = "84111506"
-      @concepto_actividad.cantidad = 1
-      @concepto_actividad.clave_unidad = "ACT"
-      @concepto_actividad.descripcion = "Pago"
+      @concepto_actividad = ConceptoRep.new
       @concepto_actividad.precio_bruto = 0
       @concepto_actividad.tasa_iva = nil
-      @concepto_actividad.objeto_impuestos = "01"
       @concepto_actividad.calculate!
       @conceptos.add_child_node @concepto_actividad
       calculate!
