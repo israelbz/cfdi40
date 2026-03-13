@@ -162,6 +162,16 @@ module Cfdi40
       concepto
     end
 
+    # Load node 'Concepto' (rep) from a Nokogiri::XML::Element
+    def load_concepto_rep(ng_node)
+      concepto = ConceptoRep.new
+      concepto.parent_node = @conceptos
+      concepto.load_from_ng_node(ng_node)
+      concepto.precio_bruto = concepto.valor_unitario.to_f
+      @conceptos.children_nodes << concepto
+      concepto
+    end
+
     # Load node cfdi:Comprobante/cfdi:Impuestos
     #
     # Normally this node is calculated but must be read from the

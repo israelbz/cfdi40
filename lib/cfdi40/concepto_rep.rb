@@ -10,7 +10,7 @@ module Cfdi40
     define_element_name 'Concepto'
     define_attribute :clave_prod_serv, xml_attribute: "ClaveProdServ", default: "84111506"
     define_attribute :no_identificacion, xml_attribute: "NoIdentificacion"
-    define_attribute :cantidad, xml_attribute: "Cantidad", default: 1
+    define_attribute :cantidad, xml_attribute: "Cantidad", default: 1, format: :integer
     define_attribute :clave_unidad, xml_attribute: "ClaveUnidad", default: "ACT"
     define_attribute :unidad, xml_attribute: "Unidad"
     define_attribute :descripcion, xml_attribute: "Descripcion", no_writer: true, default: "Pago"

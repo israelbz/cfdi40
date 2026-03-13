@@ -48,6 +48,11 @@ module Cfdi40
 
     def self.define_reader(accessor, format)
       case format.to_s
+      when 'integer'
+        define_method("#{accessor}".to_sym) do
+          value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : 0
+          value.to_i
+        end
       when 't_Importe', 'decimal'
         define_method("#{accessor}".to_sym) do
           value = instance_variable_defined?("@#{accessor}".to_sym) ? instance_variable_get("@#{accessor}".to_sym) : 0

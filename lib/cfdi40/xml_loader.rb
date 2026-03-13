@@ -34,6 +34,8 @@ module Cfdi40
     end
 
     def load_conceptos
+      return load_concepto_rep if @cfdi.tipo_de_comprobante == 'P'
+
       n_concepto = 0
       xml_doc.xpath("//cfdi:Concepto").each do |node|
         n_concepto += 1
@@ -42,6 +44,13 @@ module Cfdi40
         iva_node = xml_doc.xpath(iva_path).first
         concepto.load_traslado_iva(iva_node) if iva_node
       end
+    end
+
+    def load_concepto_rep
+      node = xml_doc.xpath("//cfdi:Concepto").first
+      return if node.nil?
+
+      concepto = @cfdi.load_concepto_rep(node)
     end
 
     def load_emisor
