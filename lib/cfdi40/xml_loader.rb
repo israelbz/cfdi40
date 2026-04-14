@@ -19,6 +19,7 @@ module Cfdi40
       load_impuestos
       load_pagos
       load_tfd
+      load_cfdi_relacionados
 
       @cfdi.lock if readonly?
       @cfdi.loaded_xml = xml_string
@@ -87,6 +88,16 @@ module Cfdi40
       return if pagos_node.nil?
 
       @cfdi.load_pagos(pagos_node)
+    end
+
+    def load_cfdi_relacionados
+      xml_doc.xpath("//cfdi:CfdiRelacionados").each do |cfdi_rel_node|
+        tipo_relacion = cfdi_rel_node.attributes["TipoRelacion"].value
+        cfdi_rel_node.xpath("cfdi:CfdiRelacionado").each do |cfdi_node|
+          uuid = cfdi_node.attributes["UUID"].value
+          @cfdi.add_cfdi_relacionado(tipo_relacion, uuid)
+        end
+      end
     end
   end
 end

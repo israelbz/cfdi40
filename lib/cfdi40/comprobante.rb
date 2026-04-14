@@ -31,7 +31,7 @@ module Cfdi40
     define_attribute :lugar_expedicion, xml_attribute: "LugarExpedicion"
     define_attribute :confirmacion, xml_attribute: "Confirmacion"
 
-    attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors, :cadena_original
+    attr_reader :emisor, :receptor, :conceptos, :private_key, :sat_csd, :errors, :cadena_original, :cfdi_relacionados
     attr_writer :key_data, :key_pass, :namespace_pagos_on_root
     attr_accessor :loaded_xml
 
@@ -209,12 +209,27 @@ module Cfdi40
       complemento.pagos.remove_pago(index.to_i)
     end
 
-    # See test_adding_pago_with_n_docto_relacionados in file test/test_cfdi40_rep.rb 
+    # See test_adding_pago_with_n_docto_relacionados in file test/test_cfdi40_rep.rb
     def add_splitted_pago(attributes = {})
       raise Error, "CFDi debe ser tipo 'P'" unless tipo_de_comprobante == "P"
 
       add_node_concepto_actividad_pago
       complemento.add_splitted_pago(attributes)
+    end
+
+    def add_cfdi_relacionado(tipo_relacion, uuid)
+      cfdi_relacionados_node = CfdiRelacionados.new
+      cfdi_relacionados_node.tipo_relacion = tipo_relacion
+      cfdi_relacionados_node.parent_node = self
+      cfdi_relacionados_node.add_cfdi(uuid)
+      @children_nodes << cfdi_relacionados_node
+      @cfdi_relacionados ||= []
+      @cfdi_relacionados << cfdi_relacionados_node
+      cfdi_relacionados_node
+    end
+
+    def cfdi_relacionados_nodes
+      @cfdi_relacionados || []
     end
 
     def to_s

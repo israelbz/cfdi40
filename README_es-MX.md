@@ -39,7 +39,7 @@ Hasta ahora:
     cfdi.receptor.rfc = 'XAXX010101000'
     cfdi.receptor.domicilio_fiscal = '06000'
     cfdi.receptor.regimen_fiscal = '616'
-    cfdi.receptor.uso_cfdi = 'G03'
+    cfdi.receptor.uso_cfdi = 'S01'
 
     # Agrega un concepto en pesos,
     # precio final al cliente (neto)
