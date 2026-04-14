@@ -47,6 +47,7 @@ module Cfdi40
       @sat_csd = SatCsd.new
       @fecha ||= Time.now
       @children_nodes = [@emisor, @receptor, @conceptos]
+      @cfdi_relacionados = []
       @namespace_pagos_on_root = false
       set_defaults
     end
@@ -229,7 +230,17 @@ module Cfdi40
     end
 
     def cfdi_relacionados_nodes
-      @cfdi_relacionados || []
+      @cfdi_relacionados
+    end
+
+    def remove_cfdi_relacionado(index)
+      return if @cfdi_relacionados.empty?
+
+      nodo = @cfdi_relacionados[index.to_i]
+      return unless nodo
+
+      delete_child(nodo)
+      @cfdi_relacionados.delete_at(index.to_i)
     end
 
     def to_s
