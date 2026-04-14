@@ -50,7 +50,7 @@ module Cfdi40
       node = xml_doc.xpath("//cfdi:Concepto").first
       return if node.nil?
 
-      concepto = @cfdi.load_concepto_rep(node)
+      @cfdi.load_concepto_rep(node)
     end
 
     def load_emisor
