@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" TipoDeComprobante="E" Exportacion="01">
+  <cfdi:Emisor Rfc="XEXX010101000"/>
+  <cfdi:Receptor Rfc="XEXX010101000"/>
+  <cfdi:Conceptos/>
+  <cfdi:CfdiRelacionados TipoRelacion="01">
+    <cfdi:CfdiRelacionado UUID="ABC12345-1234-1234-1234-123456789012"/>
+  </cfdi:CfdiRelacionados>
+</cfdi:Comprobante>

@@ -298,19 +298,7 @@ class TestCfdi40 < Minitest::Test
   end
 
   def test_load_cfdi_relacionados
-    xml = <<-XML
-<?xml version="1.0" encoding="utf-8"?>
-<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" TipoDeComprobante="E" Exportacion="01">
-  <cfdi:Emisor Rfc="XEXX010101000"/>
-  <cfdi:Receptor Rfc="XEXX010101000"/>
-  <cfdi:Conceptos/>
-  <cfdi:CfdiRelacionados TipoRelacion="01">
-    <cfdi:CfdiRelacionado UUID="ABC12345-1234-1234-1234-123456789012"/>
-  </cfdi:CfdiRelacionados>
-</cfdi:Comprobante>
-XML
-
-    cfdi = Cfdi40.open(xml)
+    cfdi = Cfdi40.open(File.read("test/files/cfdi_con_un_relacionado.xml"))
 
     assert_equal 1, cfdi.cfdi_relacionados_nodes.count
     nodo = cfdi.cfdi_relacionados_nodes.first
@@ -384,22 +372,7 @@ XML
   end
 
   def test_remove_cfdi_relacionado_from_xml
-    xml = <<-XML
-<?xml version="1.0" encoding="utf-8"?>
-<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" TipoDeComprobante="E" Exportacion="01">
-  <cfdi:Emisor Rfc="XEXX010101000"/>
-  <cfdi:Receptor Rfc="XEXX010101000"/>
-  <cfdi:Conceptos/>
-  <cfdi:CfdiRelacionados TipoRelacion="01">
-    <cfdi:CfdiRelacionado UUID="AAA11111-1111-1111-1111-111111111111"/>
-  </cfdi:CfdiRelacionados>
-  <cfdi:CfdiRelacionados TipoRelacion="02">
-    <cfdi:CfdiRelacionado UUID="BBB22222-2222-2222-2222-222222222222"/>
-  </cfdi:CfdiRelacionados>
-</cfdi:Comprobante>
-XML
-
-    cfdi = Cfdi40.open(xml)
+    cfdi = Cfdi40.open(File.read("test/files/cfdi_con_dos_relacionados.xml"))
     assert_equal 2, cfdi.cfdi_relacionados_nodes.count
 
     cfdi.remove_cfdi_relacionado(0)
