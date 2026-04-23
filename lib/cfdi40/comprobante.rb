@@ -46,8 +46,8 @@ module Cfdi40
       @receptor.parent_node = self
       @sat_csd = SatCsd.new
       @fecha ||= Time.now
-      @children_nodes = [@emisor, @receptor, @conceptos]
       @cfdi_relacionados = []
+      @children_nodes = [@emisor, @receptor, @conceptos]
       @namespace_pagos_on_root = false
       set_defaults
     end
@@ -223,9 +223,9 @@ module Cfdi40
       cfdi_relacionados_node.tipo_relacion = tipo_relacion
       cfdi_relacionados_node.parent_node = self
       cfdi_relacionados_node.add_cfdi(uuid)
-      @children_nodes << cfdi_relacionados_node
+      @children_nodes.unshift cfdi_relacionados_node
       @cfdi_relacionados ||= []
-      @cfdi_relacionados << cfdi_relacionados_node
+      @cfdi_relacionados.unshift cfdi_relacionados_node
       cfdi_relacionados_node
     end
 
