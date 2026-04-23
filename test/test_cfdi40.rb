@@ -320,13 +320,14 @@ class TestCfdi40 < Minitest::Test
 
     assert_equal 2, cfdi.cfdi_relacionados_nodes.count
 
+    # Nodes are append in first position
     nodo1 = cfdi.cfdi_relacionados_nodes[0]
-    assert_equal "01", nodo1.tipo_relacion
-    assert_equal uuid1, nodo1.cfdi_relacionados.first.uuid
+    assert_equal "02", nodo1.tipo_relacion
+    assert_equal uuid2, nodo1.cfdi_relacionados.first.uuid
 
     nodo2 = cfdi.cfdi_relacionados_nodes[1]
-    assert_equal "02", nodo2.tipo_relacion
-    assert_equal uuid2, nodo2.cfdi_relacionados.first.uuid
+    assert_equal "01", nodo2.tipo_relacion
+    assert_equal uuid1, nodo2.cfdi_relacionados.first.uuid
   end
 
   def test_remove_first_cfdi_relacionado
@@ -346,11 +347,12 @@ class TestCfdi40 < Minitest::Test
     assert_equal 1, cfdi.cfdi_relacionados_nodes.count
 
     nodo = cfdi.cfdi_relacionados_nodes.first
-    assert_equal "02", nodo.tipo_relacion
-    assert_equal uuid2, nodo.cfdi_relacionados.first.uuid
+    assert_equal "01", nodo.tipo_relacion
+    assert_equal uuid1, nodo.cfdi_relacionados.first.uuid
   end
 
   def test_remove_last_cfdi_relacionado
+    # Nodes are append in first position
     cfdi = Cfdi40.new
     cfdi.tipo_de_comprobante = "E"
     cfdi.emisor.rfc = "XEXX010101000"
@@ -367,8 +369,8 @@ class TestCfdi40 < Minitest::Test
     assert_equal 1, cfdi.cfdi_relacionados_nodes.count
 
     nodo = cfdi.cfdi_relacionados_nodes.first
-    assert_equal "01", nodo.tipo_relacion
-    assert_equal uuid1, nodo.cfdi_relacionados.first.uuid
+    assert_equal "02", nodo.tipo_relacion
+    assert_equal uuid2, nodo.cfdi_relacionados.first.uuid
   end
 
   def test_remove_cfdi_relacionado_from_xml
@@ -379,7 +381,7 @@ class TestCfdi40 < Minitest::Test
     assert_equal 1, cfdi.cfdi_relacionados_nodes.count
 
     nodo = cfdi.cfdi_relacionados_nodes.first
-    assert_equal "02", nodo.tipo_relacion
-    assert_equal "BBB22222-2222-2222-2222-222222222222", nodo.cfdi_relacionados.first.uuid
+    assert_equal "01", nodo.tipo_relacion
+    assert_equal "AAA11111-1111-1111-1111-111111111111", nodo.cfdi_relacionados.first.uuid
   end
 end
